@@ -94,7 +94,56 @@
 | 4. Кэширование | 5 | | |
 | 5. Шрифты / Виджеты | 5 | | |
 | 6. Безопасность | 20 | | |
-| **Итого** | **48** | | |
+| 7. PHP / MySQL / Сервер | 4 | | |
+| 8. Preload / Resource Hints | 2 | | |
+| 9. Brotli / HTTP/3 / CDN / AVIF | 4 | | |
+| 10. CSS containment / Server-Timing | 2 | | |
+| 11. Security Hardening (2FA, WAF, SSH, SRI, DNS) | 5 | | |
+| **Итого** | **85** | | |
+
+---
+
+## 7. PHP / MySQL / Сервер
+
+| № | Что проверить / сделать | Где решение | Статус |
+|---|------------------------|-------------|--------|
+| 7.1 | Включить OPcache (memory_consumption=256, max_accelerated_files=40000) | [`17_opcache_phpfpm.md`](17_opcache_phpfpm.md) — секция OPcache | |
+| 7.2 | Настроить PHP-FPM (pm.max_children, pm.max_requests) | [`17_opcache_phpfpm.md`](17_opcache_phpfpm.md) — секция PHP-FPM | |
+| 7.3 | Настроить MySQL (innodb_buffer_pool_size, slow_query_log) | [`18_mysql_tuning.md`](18_mysql_tuning.md) — полный конфиг my.cnf | |
+| 7.4 | Проверить и добавить индексы в БД (EXPLAIN на медленные запросы) | [`18_mysql_tuning.md`](18_mysql_tuning.md) — проверка индексов | |
+
+## 8. Preload / Resource Hints / iframe
+
+| № | Что проверить / сделать | Где решение | Статус |
+|---|------------------------|-------------|--------|
+| 8.1 | Добавить preload для шрифтов, hero-изображения, critical CSS | [`19_preload_and_iframe.md`](19_preload_and_iframe.md) — preload | |
+| 8.2 | Добавить lazy load для iframe (YouTube, карты) через IntersectionObserver | [`19_preload_and_iframe.md`](19_preload_and_iframe.md) — lazy iframe | |
+
+## 9. Brotli / HTTP/3 / CDN / AVIF
+
+| № | Что проверить / сделать | Где решение | Статус |
+|---|------------------------|-------------|--------|
+| 9.1 | Включить Brotli (предсозданные .br файлы, brotli_static on) | [`20_brotli_http3.md`](20_brotli_http3.md) — Brotli | |
+| 9.2 | Включить HTTP/3 (QUIC) на сервере | [`20_brotli_http3.md`](20_brotli_http3.md) — HTTP/3 | |
+| 9.3 | Вынести статику на CDN (Cloudflare / Selectel) | [`21_cdn_avif.md`](21_cdn_avif.md) — CDN | |
+| 9.4 | Добавить AVIF изображения через `<picture>` + try_files | [`21_cdn_avif.md`](21_cdn_avif.md) — AVIF | |
+
+## 10. CSS containment / Server-Timing
+
+| № | Что проверить / сделать | Где решение | Статус |
+|---|------------------------|-------------|--------|
+| 10.1 | Добавить `contain: layout style paint` на карточки и блоки | [`22_containment_server_timing.md`](22_containment_server_timing.md) — CSS containment | |
+| 10.2 | Добавить Server-Timing header для мониторинга узких мест | [`22_containment_server_timing.md`](22_containment_server_timing.md) — Server-Timing | |
+
+## 11. Security Hardening
+
+| № | Что проверить / сделать | Где решение | Статус |
+|---|------------------------|-------------|--------|
+| 11.1 | Включить 2FA для админов, настроить Fail2ban, установить ModSecurity | [`23_2fa_fail2ban_waf.md`](23_2fa_fail2ban_waf.md) — 2FA, Fail2ban, WAF | |
+| 11.2 | Настроить AIDE (целостность файлов), SELinux/AppArmor, SSH hardening | [`24_aide_selinux_ssh.md`](24_aide_selinux_ssh.md) — AIDE, SELinux, SSH | |
+| 11.3 | Настроить session security (httponly, samesite, secure), SRI, CSP strict-dynamic | [`25_session_sri_csp.md`](25_session_sri_csp.md) — Session + SRI + strict-dynamic | |
+| 11.4 | Настроить SPF/DKIM/DMARC, DNSSEC, CAA | [`26_email_dns_security.md`](26_email_dns_security.md) — Email + DNS security | |
+| 11.5 | Регулярное сканирование (Nikto, OWASP ZAP, Nuclei), мониторинг CVE | [`27_vulnerability_scanning.md`](27_vulnerability_scanning.md) — Vuln scanning + CVE | |
 
 ---
 
@@ -115,4 +164,17 @@
 12_full_audit_checklist.md      — Сводный чеклист
 13_hide_files_from_public.md    — Закрытие файлов от публичного доступа
 14_audit_checklist_with_references.md — Этот файл
+15_whats_not_covered.md         — Что ещё не покрыто (анализ)
+16_critical_css.md              — Critical CSS
+17_opcache_phpfpm.md           — PHP OPcache + PHP-FPM tuning
+18_mysql_tuning.md             — MySQL tuning + медленные запросы
+19_preload_and_iframe.md        — Preload / Resource Hints / Lazy iframe
+20_brotli_http3.md              — Brotli сжатие + HTTP/3 (QUIC)
+21_cdn_avif.md                  — CDN для статики + AVIF изображения
+22_containment_server_timing.md — CSS containment + Server-Timing
+23_2fa_fail2ban_waf.md          — 2FA + Fail2ban + WAF (ModSecurity)
+24_aide_selinux_ssh.md          — AIDE / SELinux / SSH hardening
+25_session_sri_csp.md           — Session security / SRI / CSP strict-dynamic
+26_email_dns_security.md        — Email security (SPF/DKIM/DMARC) + DNS (DNSSEC/CAA)
+27_vulnerability_scanning.md    — Vulnerability scanning + CVE monitoring
 ```
