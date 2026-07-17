@@ -76,6 +76,18 @@ Jivosite и megavenue.by грузятся сразу. Переведите их 
 ## Дополнительно
 
 8. **`07_defer_widgets.md`** — отложить загрузку Jivosite и megavenue.by
+9. **`09_security_and_ssl.md`** — HTTP-заголовки безопасности (HSTS, CSP, X-Frame-Options и др.), усиление SSL/TLS, rate limiting
+
+---
+
+## Инструменты для проверки
+
+| Инструмент | Ссылка |
+|-----------|--------|
+| PageSpeed Insights | https://pagespeed.web.dev/analysis/https-nlb-by |
+| Security Headers | https://securityheaders.com/?q=nlb.by&followRedirects=on |
+| SSL Labs | https://www.ssllabs.com/ssltest/analyze.html?d=nlb.by |
+| GTmetrix | https://gtmetrix.com/?url=https://nlb.by |
 
 ---
 

@@ -1,0 +1,204 @@
+Site Info - Nlb.by
+Overview of web technologies used by Nlb.by.
+
+Website Background
+
+Национальная библиотека Беларуси
+Description on Homepage
+
+Top 1m among all websites
+Popularity rank
+
+
+Content Management System
+
+Bitrix Site Manager is a content management system based on PHP or ASP.NET.
+
+Bitrix
+
+Server-side Programming Language
+
+PHP is a scripting language for creating websites.
+
+PHP
+
+Client-side Programming Language
+
+JavaScript is a lightweight, object-oriented, cross-platform scripting language, often used within web pages.
+
+JavaScript
+
+JavaScript Libraries
+
+jQuery is a JavaScript library that simplifies HTML document traversing, event handling, animating and Ajax interaction. Originally developed by John Resig.
+
+jQuery 1.12.4
+
+Modernizr is a JavaScript library that detects HTML5 and CSS3 features in the visitors browser.
+
+Modernizr
+
+Web Server
+
+Nginx (pronounced as "engine X") is a lightweight open source web server developed by Igor Sysoev.
+
+Nginx 1.22.1
+
+SSL Certificate Authority
+
+GlobalSign is an IT security service provider, also operating as SSL certificate authority.
+
+GlobalSign
+
+JavaScript Content Delivery Networks
+
+Google Hosted Libraries (formerly called Google Libraries API) is a content distribution network for the most popular, open-source JavaScript libraries, provided by Google.
+
+Google Hosted Libraries
+used on a subdomain
+
+Yandex Libraries Hosting provides hosted JavaScript libraries, provided by Yandex.
+
+Yandex Libraries Hosting
+used on a subdomain
+
+Traffic Analysis Tools
+
+Yandex.Metrica is a free web analytics system combining customizable reporting tools with behavioral analytics.
+
+Yandex.Metrica
+
+Google Analytics is a free service to get detailed statistics about the visitors of a website, provided by Google. This includes the Ads conversion tracking and the Floodlight services.
+
+Google Analytics
+used on a subdomain
+
+Advertising Network
+
+The Google Advertising network consists of AdSense, DoubleClick and other services.
+
+Google Ads
+used on a subdomain
+
+Tag Manager
+
+The Google Tag Manager is a Google service to support webmasters to manage tags on their websites.
+
+Google Tag Manager
+used on a subdomain
+
+Site Elements
+
+External Cascading Style Sheets define style rules in a separate CSS file.
+
+External CSS
+
+Embedded Cascading Style Sheets define a set of style rules in a <style> element within a web page.
+
+Embedded CSS
+
+Inline Cascading Style Sheets define style rules directly within an (X)HTML element using the style attribute.
+
+Inline CSS
+
+Session cookies are temporary cookies, which are deleted when the user closes the browser.
+
+Session Cookies
+
+Persistent cookies with an expiration time between 1 month and 1 year.
+
+Cookies expiring in months
+
+HttpOnly cookies are used only in the HTTP protocol and not in client side scripts, which may increase security.
+
+HttpOnly Cookies
+
+Non-HttpOnly cookies are used in the HTTP protocol and also in client side scripts, which may be a security threat.
+
+Non-HttpOnly Cookies
+
+Secure cookies are used only via an encrypted connections, which may increase security.
+
+Secure Cookies
+
+Non-secure cookies may be used via an unencrypted connections, which may be a security threat.
+
+Non-Secure Cookies
+
+Gzip (GNU zip) is a file compression algorithm.
+
+Gzip Compression
+
+HTTP/2 is the second major version of the HTTP network protocol.
+
+HTTP/2
+used until recently
+
+HTTP Strict Transport Security (HSTS) defines a mechanism enabling web sites to declare themselves accessible only via secure connections.
+
+HTTP Strict Transport Security
+used until recently
+
+The websites redirects visitors to use SSL encryption, e.g. from http://example.com/ to https://example.com/.
+
+Default protocol https
+used until recently
+
+Structured Data Formats
+
+The Open Graph protocol, originally developed by Facebook, is an RDFa-based format that enables any web page to become a rich object in a social graph.
+
+Open Graph
+
+JSON-LD (JavaScript Object Notation for Linked Data) is a method of encoding Linked Data using JSON.
+
+JSON-LD
+
+Microdata is a specification to integrate metadata within existing content on web pages.
+
+Microdata
+used on inner pages
+
+Markup Language
+
+HTML5 is the fifth revision of the HTML standard.
+
+HTML5
+
+Character Encoding
+
+UTF-8 (8-bit Unicode Transformation Format) is a variable-length character encoding for Unicode, which is backwards compatible with ASCII.
+
+UTF-8
+
+Image File Formats
+
+PNG (Portable Network Graphics) is a lossless compression image format, suitable to store graphics with uniformly colored areas, and originally introduced as a free, open-source successor of GIF.
+
+PNG
+
+JPEG (Joint Photographic Experts Group) is a lossy compression method suitable to store photographic images.
+
+JPEG
+
+Scalable Vector Graphics (SVG) is an XML-based vector image format.
+
+SVG
+
+GIF (Graphics Interchange Format) is a lossless compression image format, originally introduced by CompuServe and suitable to store graphics, logos and simple animations.
+
+GIF
+
+Top Level Domain
+
+Belarus
+
+.by
+
+Server Location
+
+Belarus
+
+Content Language
+
+Russian
