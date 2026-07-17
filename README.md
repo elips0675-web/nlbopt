@@ -94,6 +94,13 @@ Jivosite и megavenue.by грузятся сразу. Переведите их 
 | urlscan.io | https://urlscan.io/ |
 | VirusTotal | https://www.virustotal.com/gui/domain/nlb.by |
 | Geekflare Tools | https://geekflare.com/tools/security-headers |
+| WebPageTest | https://www.webpagetest.org/ |
+| W3C Validator | https://validator.w3.org/ |
+| Brotli Test | https://tools.keycdn.com/brotli |
+| HTTP/3 Check | https://http3check.net/?host=nlb.by |
+| Mobile-Friendly Test | https://search.google.com/test/mobile-friendly?id=nlb.by |
+| WAVE (a11y) | https://wave.webaim.org/ |
+| Schema Validator | https://validator.schema.org/ |
 
 ---
 
