@@ -88,6 +88,12 @@ Jivosite и megavenue.by грузятся сразу. Переведите их 
 | Security Headers | https://securityheaders.com/?q=nlb.by&followRedirects=on |
 | SSL Labs | https://www.ssllabs.com/ssltest/analyze.html?d=nlb.by |
 | GTmetrix | https://gtmetrix.com/?url=https://nlb.by |
+| Mozilla Observatory | https://observatory.mozilla.org/analyze/nlb.by |
+| Sucuri SiteCheck | https://sitecheck.sucuri.net/results/https/nlb.by |
+| CSP Evaluator | https://csp-evaluator.withgoogle.com/ |
+| urlscan.io | https://urlscan.io/ |
+| VirusTotal | https://www.virustotal.com/gui/domain/nlb.by |
+| Geekflare Tools | https://geekflare.com/tools/security-headers |
 
 ---
 
