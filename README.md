@@ -82,25 +82,37 @@ Jivosite и megavenue.by грузятся сразу. Переведите их 
 
 ## Инструменты для проверки
 
-| Инструмент | Ссылка |
-|-----------|--------|
-| PageSpeed Insights | https://pagespeed.web.dev/analysis/https-nlb-by |
-| Security Headers | https://securityheaders.com/?q=nlb.by&followRedirects=on |
-| SSL Labs | https://www.ssllabs.com/ssltest/analyze.html?d=nlb.by |
-| GTmetrix | https://gtmetrix.com/?url=https://nlb.by |
-| Mozilla Observatory | https://observatory.mozilla.org/analyze/nlb.by |
-| Sucuri SiteCheck | https://sitecheck.sucuri.net/results/https/nlb.by |
-| CSP Evaluator | https://csp-evaluator.withgoogle.com/ |
-| urlscan.io | https://urlscan.io/ |
-| VirusTotal | https://www.virustotal.com/gui/domain/nlb.by |
-| Geekflare Tools | https://geekflare.com/tools/security-headers |
-| WebPageTest | https://www.webpagetest.org/ |
-| W3C Validator | https://validator.w3.org/ |
-| Brotli Test | https://tools.keycdn.com/brotli |
-| HTTP/3 Check | https://http3check.net/?host=nlb.by |
-| Mobile-Friendly Test | https://search.google.com/test/mobile-friendly?id=nlb.by |
-| WAVE (a11y) | https://wave.webaim.org/ |
-| Schema Validator | https://validator.schema.org/ |
+### 🚀 Производительность
+
+| Инструмент | Что даёт | Как использовать |
+|-----------|----------|-----------------|
+| **PageSpeed Insights** | Lighthouse с серверов Google для моб. и десктоп. Оценки + рекомендации. | Прогнать после каждого изменения, следить за динамикой. |
+| **GTmetrix** | Детальный водопад запросов, время загрузки по метрикам (FCP, TTFB, LCP), выбор региона. | Полезно для поиска конкретных узких мест в порядке загрузки ресурсов. |
+| **WebPageTest** | Самый детальный тест: видео загрузки, водопад, выбор устройства/браузера/региона, 3G-симуляция. | Запускать из США/Европы, смотреть водопад и Suggested Metrics. |
+| **Brotli Test** | Проверяет, включено ли сжатие Brotli (на 20-30% эффективнее Gzip). | Если Brotli отключён — включить в Nginx (модуль ngx_brotli). |
+| **HTTP/3 Check** | Проверяет поддержку HTTP/3 (QUIC) — протокол быстрее на мобильных и при плохом соединении. | Если нет — настроить Nginx с quic. |
+
+### 🛡️ Безопасность
+
+| Инструмент | Что даёт | Как использовать |
+|-----------|----------|-----------------|
+| **Security Headers** | Проверяет HTTP-заголовки безопасности (HSTS, CSP, X-Frame-Options и др.) и ставит оценку. | Цель — A+. Если ниже — добавить заголовки из `09_security_and_ssl.md`. |
+| **Mozilla Observatory** | Комплексный аудит: заголовки, TLS, CSP, подкачка. Ставит оценку (A+). | Альтернатива Security Headers, проверяет глубже. Исправить замечания до A/A+. |
+| **SSL Labs** | Детальный анализ SSL/TLS: версии протоколов, шифры, цепочка сертификатов. | Цель — A+. Убедиться, что TLS 1.0/1.1 отключены, нет слабых шифров. |
+| **Sucuri SiteCheck** | Сканирует на малварь, блоклисты, подозрительные редиректы, версию CMS. | Прогонять ежемесячно. Если занесён в блоклист — срочно разбираться. |
+| **CSP Evaluator** | Анализирует Content-Security-Policy на корректность и возможные обходы. | Вставить свою CSP — увидеть уязвимости и лишние разрешения. |
+| **urlscan.io** | Полный скан: все запросы, поддомены, подключённые скрипты, контакты с подозрительными доменами. | Полезно найти неожиданные сторонние скрипты или утечки данных. |
+| **VirusTotal** | Проверка домена 70+ антивирусами и блоклистами. | Прогнать, если есть подозрения на заражение. |
+| **Geekflare Tools** | Набор: проверка заголовков безопасно­сти, SSL, DMARC, SPF, DKIM. | Быстрая поверхностная проверка. |
+
+### 📱 Совместимость и SEO
+
+| Инструмент | Что даёт | Как использовать |
+|-----------|----------|-----------------|
+| **Mobile-Friendly Test** | Проверяет, считает ли Google страницу мобильно-дружественной. | Убедиться, что нет ошибок «контент шире экрана», «текст слишком мелкий». |
+| **W3C Validator** | Валидация HTML и CSS на соответствие стандартам. | Ошибки валидации могут вызывать странное поведение в разных браузерах. |
+| **Schema Validator** | Проверяет корректность JSON-LD/Microdata/Open Graph разметки. | Битрикс часто генерирует кривую микроразметку — поправить для сниппетов в поиске. |
+| **WAVE (a11y)** | Проверка спецвозможностей: контраст, alt-тексты, aria-атрибуты, навигация с клавиатуры. | Битриксовые шаблоны обычно проваливают a11y. Исправить ошибки с контрастом и alt. |
 
 ---
 
