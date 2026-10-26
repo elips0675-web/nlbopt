@@ -36,6 +36,32 @@
 
 DevTools → Performance → запилить профиль загрузки — меньше перерисовок.
 
+## Non-composited animations
+
+Lighthouse: **«Avoid non-composited animations — 1 animated element»**.
+
+Анимация, которая меняет `top`, `left`, `width`, `height`, `margin` или `box-shadow`, каждый кадр вызывает layout/paint в main thread. На мобиле это особенно заметно во время загрузки.
+
+Плохо:
+
+```css
+.slider { transition: left .4s; }
+```
+
+Хорошо:
+
+```css
+.slider { transition: transform .4s; }
+.slider.is-next { transform: translateX(-100%); }
+```
+
+Правила:
+
+- анимировать только `transform` и `opacity` — их рисует композитор;
+- `will-change: transform` — точечно и только на время анимации, не всем элементам;
+- не анимировать `box-shadow` и `filter: blur()` без необходимости;
+- проверить: DevTools → Performance → Animations или Lighthouse → Non-composited animations.
+
 ## Server-Timing
 
 Позволяет увидеть узкие места через DevTools → Network → Timing.

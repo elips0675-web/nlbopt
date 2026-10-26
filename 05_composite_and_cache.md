@@ -111,8 +111,32 @@ curl -sI https://nlb.by/local/templates/index_2026/assets/css/main.css | grep -i
 
 Сейчас WOFF2 отдаются с `Cache-Control: max-age=2592000` и неверным `Content-Type: application/force-download`. Кэш — в этой инструкции, MIME — в `06_fonts_display_swap.md`.
 
-## Ожидаемый эффект
+## 5. bfcache
 
-- повторные визиты: статика не запрашивается вообще (сейчас — условные запросы каждые 30 дней);
+Lighthouse: **«Page prevented back/forward cache restoration — 2 failure reasons»**.
+
+bfcache — кэш целой страницы в памяти браузера. Когда он работает, кнопка «назад» показывает страницу мгновенно, без сети и повторной сборки. Сейчас не работает.
+
+**Причина 1 — `Cache-Control: no-store` на HTML.** Пока он есть, bfcache запрещён. Лечится композитом (раздел 1) или заменой на `private, max-age=0, must-revalidate`.
+
+**Причина 2 — скорее всего открытый WebSocket (Pull/Jivo) или `unload`-обработчик.** Точную причину покажет DevTools → Application → Back/Forward Cache → Test.
+
+Что делать:
+
+- отложить Jivo до взаимодействия (`07_defer_widgets.md`) — тогда WebSocket не открывается на старте;
+- не вешать `window.onunload` / `beforeunload` без необходимости; для очистки использовать `pagehide`;
+- если WebSocket нужен, закрывать его в `pagehide` и восстанавливать в `pageshow` при `event.persisted`.
+
+Проверка, что страница попала в bfcache:
+
+```js
+window.addEventListener('pageshow', function (e) {
+    if (e.persisted) console.log('bfcache hit');
+});
+```
+
+## 6. Ожидаемый эффект
+
+- повторные визиты: статика не запрашивается вообще (сейчас — условные запросы каждые 30 дней); Lighthouse оценивает **Cache lifetimes в −139 КиБ**;
 - TTFB с композитом: 100–200 мс вместо 471 мс;
-- «назад» в браузере перестанет перезагружать страницу (сейчас `no-store` это ломает).
+- «назад» в браузере перестанет перезагружать страницу (сейчас `no-store` ломает bfcache).

@@ -50,6 +50,7 @@
 | 4.3 | Включить Gzip/Brotli | [`05_composite_and_cache.md`](05_composite_and_cache.md) — `.htaccess` или nginx | |
 | 4.4 | Проверить HTTP/2 или HTTP/3 на сервере | [`11_performance_audit_checklist.md`](11_performance_audit_checklist.md) — раздел «Сервер/Кэширование» | |
 | 4.5 | Настроить Expires-заголовки для изображений, CSS, JS | [`05_composite_and_cache.md`](05_composite_and_cache.md) — Apache `mod_expires` | |
+| 4.6 | Разблокировать bfcache: убрать `no-store`, `unload`, лишние WebSocket | [`05_composite_and_cache.md`](05_composite_and_cache.md) — bfcache; [`07_defer_widgets.md`](07_defer_widgets.md) | ❌ 2 причины |
 
 ## 5. Шрифты и внешние ресурсы
 
@@ -102,7 +103,7 @@
 | 10. CSS containment / Server-Timing | 2 | | |
 | 11. Security Hardening (2FA, WAF, SSH, SRI, DNS) | 5 | | |
 | 12. Agentic Browsing (a11y tree, CLS, `llms.txt`) | 3 | 1 | 2 |
-| **Итого** | **88** | | |
+| **Итого** | **90** | | |
 
 ---
 
@@ -137,6 +138,7 @@
 |---|------------------------|-------------|--------|
 | 10.1 | Добавить `contain: layout style paint` на карточки и блоки | [`22_containment_server_timing.md`](22_containment_server_timing.md) — CSS containment | |
 | 10.2 | Добавить Server-Timing header для мониторинга узких мест | [`22_containment_server_timing.md`](22_containment_server_timing.md) — Server-Timing | |
+| 10.3 | Анимации только на `transform`/`opacity`, без layout/paint | [`22_containment_server_timing.md`](22_containment_server_timing.md) — Non-composited animations | ❌ 1 элемент |
 
 ## 11. Security Hardening
 

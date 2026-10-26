@@ -2,6 +2,8 @@
 
 **Актуально на 26.10.2026.** Сейчас в HTML главной **ни одного** `preload`, `preconnect` или `dns-prefetch`. Iframe на главной нет.
 
+Lighthouse 13.3 отдельно отмечает **LCP request discovery** и **Network dependency tree**: LCP-фон задан в CSS, поэтому браузер узнаёт о нём только после разбора `main.css` (HTML → CSS → фон/шрифты). Preload ниже убирает эту задержку и закрывает оба замечания.
+
 ## Что стоит preload-ить на nlb.by
 
 Только три ресурса. Больше — вредно: preload конкурирует с LCP за приоритет.

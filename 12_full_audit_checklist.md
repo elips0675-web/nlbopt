@@ -54,6 +54,8 @@
 - [ ] Ленивая загрузка (`loading="lazy"`) на всех картинках
 - [ ] Фоновые `background-image` заменены на `<img>` с lazy
 - [ ] Нет картинок с избыточным разрешением (752px при показе 694px)
+- [ ] У всех `<img>` есть `width`/`height` *(Lighthouse ругается, даже при CLS 0)*
+- [ ] Lighthouse «Improve image delivery» — экономия 5,1 МБ реализована
 
 ### JavaScript
 
@@ -67,6 +69,9 @@
 - [ ] Неиспользуемые стили удалены (Bootstrap, jQuery UI)
 - [ ] Отключены ненужные стили ядра Битрикс
 - [ ] Inline-`style=""` заменены на классы
+- [ ] CSS минифицирован *(Lighthouse: −6 КиБ)*
+- [ ] Неиспользуемый CSS вырезан *(Lighthouse: −15 КиБ, Coverage)*
+- [ ] Анимации только на `transform`/`opacity` *(1 non-composited animation)*
 
 ### Сервер / Кэширование
 
@@ -74,6 +79,7 @@
 - [ ] **Кэширование статики** — далёкий `Expires` / `Cache-Control` для CSS, JS, изображений *(сейчас 30 дней, без `immutable`)*
 - [ ] **Композитный режим** (HTML-кэш) включён в `.settings.php` *(сейчас HTML отдаётся с `no-store`)*
 - [ ] **HTTP/2 или HTTP/3** на сервере *(HTTP/2 и TLS 1.3 есть, HTTP/3 нет)*
+- [ ] **bfcache не заблокирован**: нет `no-store`, `unload`, лишних WebSocket *(сейчас 2 причины)*
 - [ ] Медленные SQL-запросы — `after_connect.php` / `dbconn.php`
 
 ### Шрифты и внешние ресурсы

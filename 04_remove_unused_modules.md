@@ -14,6 +14,8 @@
 
 Важно: `core.min.js` (177 КБ) и `baseline.bundle.min.js` (4 КБ) — **не трогать**, это ядро.
 
+Lighthouse 13.3 подтверждает цифрами: **Reduce unused JavaScript — 190 КиБ**, **Minify JavaScript — 75 КиБ**, main-thread work — **3,0 с**, 4 long task. Это ровно этот стек: 426 КБ decoded, из них `protobuf.js` 268 КБ вообще не минифицирован. Отсюда же TBT 390 мс.
+
 Проверка, что они всё ещё подключены:
 
 ```bash
@@ -69,7 +71,8 @@ AddEventHandler("main", "OnEndBufferContent", function (&$content) {
 ## Ожидаемый эффект
 
 - −426 КБ decoded, −100 КБ transfer;
-- меньше работы main thread на старте (TBT), особенно на мобиле;
+- Lighthouse: **−190 КиБ unused JS**, ещё **−75 КиБ** после минификации `protobuf.js`;
+- main-thread work 3,0 с → заметно меньше, TBT 390 → ~200 мс;
 - минус 4 запроса.
 
 Если Pull нужен для чата — оставляйте, но тогда хотя бы минифицируйте `protobuf.js` и грузите его лениво после взаимодействия.

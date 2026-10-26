@@ -14,7 +14,9 @@
 | `a11y-2026.css` | 9 КБ | ~2 КБ | режим «Слабовидящим» |
 | шаблонный бандл | 1 КБ | — | остатки |
 
-Итого **199 КБ decoded / ~47 КБ gzip**, и всё это render-blocking. FCP — **1 056 мс**, то есть больше секунды браузер ждёт CSS, прежде чем показать хоть что-то.
+Итого **199 КБ decoded / ~47 КБ gzip**, и всё это render-blocking. FCP — **1 056 мс** на десктопе и **1,4 с** в мобильном Lighthouse, то есть больше секунды браузер ждёт CSS, прежде чем показать хоть что-то.
+
+Lighthouse 13.3 уточняет: **Render-blocking requests — −170 мс**, **Reduce unused CSS — −15 КиБ**, **Minify CSS — −6 КиБ**. 170 мс — это вклад именно блокировки; остальное время FCP — TTFB и JS. Поэтому критический CSS даёт заметный, но не десятикратный выигрыш.
 
 ## План
 
@@ -93,9 +95,9 @@ AddEventHandler("main", "OnEndBufferContent", function (&$content) {
 
 ## Проверка
 
-- Lighthouse → «Eliminate render-blocking resources» — 0 CSS.
-- FCP: было 1 056 мс, цель 500–700 мс.
-- DevTools → Coverage → unused CSS < 20%.
+- Lighthouse → «Render-blocking requests» — 0 CSS, экономия ~170 мс.
+- FCP: 1 056 мс на десктопе / 1,4 с на мобиле, цель 700–900 мс.
+- DevTools → Coverage → unused CSS < 20% (сейчас Lighthouse оценивает −15 КиБ).
 - Визуально: шапка и hero отрисованы сразу, без «прыжка» стилей.
 
 ## Чего не делать

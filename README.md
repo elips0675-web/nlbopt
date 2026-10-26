@@ -65,6 +65,29 @@
 | CLS | **0** | 🟢 |
 | SI | 1,5 с | 🟢 |
 
+### Диагностика Lighthouse
+
+| Диагностика | Значение | Куда смотреть |
+|---|---|---|
+| Improve image delivery | **−5 141 KiB** | `02_webp_and_compress.md`, `08_convert_to_webp.sh` |
+| Avoid enormous network payloads | 8 804 KiB | следствие картинок |
+| Reduce unused JavaScript | **−190 KiB** | `04_remove_unused_modules.md` |
+| Minify JavaScript | **−75 KiB** | `04` — `protobuf.js` не минифицирован |
+| Minimize main-thread work | **3,0 с** | JS + Jivo: `04`, `07` |
+| Avoid long main-thread tasks | 4 задачи | то же |
+| Render-blocking requests | −170 мс | `16_critical_css.md` |
+| Reduce unused CSS | −15 KiB | Coverage → `bitrix.css`, `16` |
+| Minify CSS | −6 KiB | `03_minification.md`, `16` |
+| Efficient cache lifetimes | −139 KiB | `05_composite_and_cache.md` |
+| Image elements without width/height | — | `01_lazy_load_images.md` |
+| Back/forward cache | 2 причины | `05` + `07` |
+| Non-composited animations | 1 элемент | `22_containment_server_timing.md` |
+| LCP request discovery | — | preload hero: `19_preload_and_iframe.md` |
+| Network dependency tree | — | CSS и шрифты: `16`, `19` |
+| 3rd parties | — | Jivo: `07_defer_widgets.md` |
+
+Суммарный вес в этом прогоне — **8 804 KiB** (в Resource Timing было 8 364 КБ; разница — кэш, версии файлов и округление). Вывод тот же: 95% веса — картинки, и Lighthouse оценивает экономию от их сжатия в **5,1 МБ**.
+
 **Почему 89 при 8 МБ картинок.** Performance в Lighthouse считается по LCP (25%), TBT (30%), CLS (25%), FCP (10%) и SI (10%). Вес страницы сам по себе балл не снижает — важно, когда отрисовался LCP-элемент и сколько JS заблокировало поток. LCP здесь — текстовый hero, а не тяжёлый PNG, поэтому 2,3 с. Но 8 МБ — это реальный трафик, мобильный интернет и полевые Core Web Vitals, которые Google меряет на живых пользователях. Балл 89 их не отменяет.
 
 **Что это значит для приоритетов.** Балл сейчас двигают две вещи: TBT 390 мс (лишний JS) и LCP 2,3 с (критический CSS, preload, композит). Картинки и lazy-load — это трафик и полевые метрики, а не +20 баллов, как казалось по прошлому аудиту.
@@ -97,13 +120,13 @@
 
 | # | Задача | Эффект | Трудоёмкость |
 |---|---|---|---|
-| 1 | Убрать `protobuf` / `dexie` / `pull.client` / `rest.client`, отложить Jivo | TBT 390 → ~150–250 мс, **+3–6 баллов Performance** | 1–2 часа |
-| 2 | WebP/AVIF + ресайз под реальный размер | −6,5…−7 МБ трафика, LCP и полевые CWV (балл почти не изменится) | 1 день |
+| 1 | Убрать `protobuf` / `dexie` / `pull.client` / `rest.client`, отложить Jivo | TBT 390 → ~150–250 мс, **+3–6 баллов**; −190 КиБ unused JS, ещё −75 КиБ после минификации | 1–2 часа |
+| 2 | WebP/AVIF + ресайз под реальный размер | Lighthouse: **−5,1 МБ** доставки; полевые LCP/CWV (балл почти не изменится) | 1 день |
 | 3 | `loading="lazy"` + `decoding="async"` | −5…−6 МБ на первом экране; CLS уже 0, размеры — «не сломать» | 1–2 часа |
 | 4 | Brotli (сейчас только gzip) | −40…−60 КБ на CSS/JS/HTML | 30 мин |
-| 5 | Cache-Control 30 дней → 1 год + `immutable` | повторные визиты без запросов | 30 мин |
-| 6 | Композит / кэш HTML (сейчас `no-store`) | TTFB 0,47 → 0,1–0,2 с, LCP | 1–2 часа |
-| 7 | Критический CSS + preload шрифтов и hero-фона | FCP 1,4 → ~1,0 с, LCP 2,3 → ~2,0 с | 1 день |
+| 5 | Cache-Control 30 дней → 1 год + `immutable` | Lighthouse: −139 КиБ на повторных визитах | 30 мин |
+| 6 | Композит / кэш HTML (сейчас `no-store`) | TTFB 0,47 → 0,1–0,2 с, LCP; **снимает главную причину отказа bfcache** | 1–2 часа |
+| 7 | Критический CSS + preload шрифтов и hero-фона | Render-blocking −170 мс, FCP 1,4 → ~1,0 с, LCP 2,3 → ~2,0 с | 1 день |
 | 8 | SEO: meta description, canonical, OG, один H1, sitemap | SEO 83 → 100 (балл дают только description и canonical); OG/H1/sitemap — для выдачи | 2–4 часа |
 | 9 | Доступность: link-name, alt, контраст, тач-цели | A11y 83 → 95+, Agentic 1/2 → 2/2 | 1 день |
 | 10 | `llms.txt` (после починки `.txt` на сервере) | Agentic: третья проверка; формат важнее наличия | 30 мин |
@@ -112,7 +135,7 @@
 
 ### 1. Изображения — 95% веса, но не 20 баллов
 
-`Performance 89` не значит, что картинки можно не трогать. Балл считается по LCP/TBT/CLS, а 8 МБ — это то, что скачивает каждый посетитель с мобильного интернета. В полевых данных Google (CrUX) такие страницы почти всегда выпадают из «хороших» по LCP.
+`Performance 89` не значит, что картинки можно не трогать. Балл считается по LCP/TBT/CLS, а 8 МБ — это то, что скачивает каждый посетитель с мобильного интернета. В полевых данных Google (CrUX) такие страницы почти всегда выпадают из «хороших» по LCP. Lighthouse оценивает экономию от **Improve image delivery** в **5 141 КиБ** — это 58% текущего веса страницы.
 
 Главная проблема теперь одна и очень конкретная: `OON.png` — 4,2 МБ. Это фотография, сохранённая в PNG. В WebP качества 80 она весит ~200–250 КБ, в AVIF — ~150 КБ. Плюс `Af_105_let_BGU.png` (781 КБ) и три JPEG по 260–714 КБ при показе в 400–800 px.
 
@@ -186,6 +209,13 @@ SEO 83 — это 10 из 12 аудитов. Не хватает ровно дв
 Есть: `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, cookie `Secure; HttpOnly`, закрытые `/bitrix/`, `/upload/`, `.git`.
 
 Нет: `Strict-Transport-Security`, `Content-Security-Policy`, `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy`. Cookie без `SameSite`. Заголовок `X-Powered-CMS: Bitrix Site Manager (hash)` раскрывает CMS и сборку. Подробно — в `09_security_and_ssl.md` и `10_security_audit_and_headers.md`.
+
+### 10. bfcache и анимации
+
+Две диагностики, которые не влияют на Performance напрямую, но видны в отчёте:
+
+- **Page prevented back/forward cache restoration — 2 failure reasons.** Главная причина — `Cache-Control: no-store` на HTML. Вторая — скорее всего открытый WebSocket (Pull/Jivo) или `unload`-обработчик; точную причину покажет DevTools → Application → Back/Forward Cache → Test. Пока bfcache не работает, кнопка «назад» каждый раз пересобирает страницу. Исправление — в `05_composite_and_cache.md` и `07_defer_widgets.md`.
+- **Avoid non-composited animations — 1 animated element.** Анимация, вероятно, меняет `top/left/width/height` или `box-shadow`. Перевести на `transform`/`opacity` — тогда кадры рисует композитор, а не main thread. Примеры — в `22_containment_server_timing.md`.
 
 ---
 

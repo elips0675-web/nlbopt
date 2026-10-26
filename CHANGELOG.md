@@ -1,5 +1,25 @@
 # Changelog
 
+## 26.10.2026 — диагностика Lighthouse: 8,8 МБ, unused JS, bfcache
+
+Второй прогон Lighthouse 13.3 дал детальные insights и diagnostics. Внёс их в документы и уточнил приоритеты: картинки подтверждены как **−5,1 МБ** доставки, а главный резерв балла — JS (unused 190 КиБ, minify 75 КиБ, main-thread 3,0 с).
+
+### Обновлено
+
+- `README.md` — таблица «Диагностика Lighthouse» (16 пунктов), точные оценки в приоритетах, раздел про bfcache и non-composited animations, вес 8 804 КиБ.
+- `29_audit_2026_10_26.md` — раздел диагностики с расшифровкой каждого пункта, включая bfcache, long tasks и LCP request discovery.
+- `01_lazy_load_images.md` — Lighthouse всё ещё ругается на отсутствие `width`/`height`, даже при CLS 0.
+- `04_remove_unused_modules.md` — подтверждение: −190 КиБ unused JS, −75 КиБ minify, main-thread 3,0 с, 4 long task.
+- `05_composite_and_cache.md` — новый раздел про bfcache: `no-store` + WebSocket/unload, как проверить и починить; −139 КиБ cache lifetimes.
+- `07_defer_widgets.md` — Jivo держит WebSocket и мешает bfcache.
+- `16_critical_css.md` — render-blocking −170 мс, unused CSS −15 КиБ, minify CSS −6 КиБ.
+- `19_preload_and_iframe.md` — LCP request discovery и network dependency tree.
+- `22_containment_server_timing.md` — non-composited animations: только `transform`/`opacity`.
+- `12_full_audit_checklist.md`, `14_audit_checklist_with_references.md` — чекбоксы bfcache, анимаций, `width`/`height`; итого 90 пунктов.
+- `CHANGELOG.md` — эта запись.
+
+---
+
 ## 26.10.2026 — Lighthouse 13.3: реальные оценки и Agentic Browsing
 
 Прогон в Chrome DevTools (Lighthouse 13.3, эмуляция Moto G / Slow 4G): **Performance 89, Accessibility 83, Best Practices 100, SEO 83, Agentic Browsing 1/2**; LCP 2,3 с, FCP 1,4 с, TBT 390 мс, CLS 0, SI 1,5 с. Пересобрал приоритеты под эти цифры.
