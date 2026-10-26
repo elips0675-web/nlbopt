@@ -15,8 +15,8 @@
 Проверка, что минификация жива:
 
 ```bash
-curl -s https://nlb.by/bitrix/cache/js/s1/index_2026/template_*/template_*.js | wc -c
-curl -s https://nlb.by/bitrix/cache/css/s1/index_2026/template_*/template_*.css | wc -c
+curl -s https://nlb/bitrix/cache/js/s1/index_2026/template_*/template_*.js | wc -c
+curl -s https://nlb/bitrix/cache/css/s1/index_2026/template_*/template_*.css | wc -c
 ```
 
 ## Что осталось не минифицировано
@@ -48,10 +48,10 @@ curl -s https://nlb.by/bitrix/cache/css/s1/index_2026/template_*/template_*.css 
 
 ```bash
 # размеры JS на главной
-curl -s https://nlb.by/ | grep -o 'src="[^"]*\.js[^"]*"' | wc -l
+curl -s https://nlb/ | grep -o 'src="[^"]*\.js[^"]*"' | wc -l
 
 # в исходнике не должно быть "сырых" многострочных шаблонных бандлов
-curl -s https://nlb.by/ | grep -o 'template_[a-f0-9]*_v1.js'
+curl -s https://nlb/ | grep -o 'template_[a-f0-9]*_v1.js'
 ```
 
 После изменений: **Настройки → Инструменты → Очистить кэш** (или удалить `/bitrix/cache/`).

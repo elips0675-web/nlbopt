@@ -2,7 +2,7 @@
 
 **Актуально на 26.10.2026.**
 
-## Что реально включено на nlb.by
+## Что реально включено на nlb
 
 | Технология | Статус | Как проверено |
 |---|---|---|
@@ -26,7 +26,7 @@
 sudo apt install brotli
 
 # Только текстовые файлы, q6 — разумный баланс
-find /var/www/nlb.by -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" -o -name "*.svg" -o -name "*.json" \) \
+find /var/www/nlb -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" -o -name "*.svg" -o -name "*.json" \) \
   -size +1k \
   -exec brotli --quality 6 --input {} --output {}.br \;
 ```
@@ -69,13 +69,13 @@ brotli_vary on;   # если поддерживается сборкой
 Сейчас на сжатых ответах **нет** `Vary: Accept-Encoding` — это может привести к тому, что прокси отдаст gzip-версию клиенту без поддержки gzip. Проверьте:
 
 ```bash
-curl -sI -H "Accept-Encoding: gzip" https://nlb.by/local/templates/index_2026/assets/css/main.css | grep -i vary
+curl -sI -H "Accept-Encoding: gzip" https://nlb/local/templates/index_2026/assets/css/main.css | grep -i vary
 ```
 
 ### Проверка
 
 ```bash
-curl -sI -H "Accept-Encoding: br" https://nlb.by/local/templates/index_2026/assets/css/main.css | grep -i content-encoding
+curl -sI -H "Accept-Encoding: br" https://nlb/local/templates/index_2026/assets/css/main.css | grep -i content-encoding
 # ожидаем: Content-Encoding: br
 ```
 
@@ -103,12 +103,12 @@ server {
 
 ```bash
 # ALPN (показывает, согласован ли h2)
-python -c "import ssl,socket;c=ssl.create_default_context();c.set_alpn_protocols(['h2','http/1.1']);s=c.wrap_socket(socket.create_connection(('nlb.by',443)),server_hostname='nlb.by');print(s.selected_alpn_protocol(),s.version())"
+python -c "import ssl,socket;c=ssl.create_default_context();c.set_alpn_protocols(['h2','http/1.1']);s=c.wrap_socket(socket.create_connection(('nlb',443)),server_hostname='nlb');print(s.selected_alpn_protocol(),s.version())"
 ```
 
 Ожидаемо сейчас: `h2 TLSv1.3`.
 
-Онлайн: `https://http3check.net/?host=nlb.by`.
+Онлайн: `https://http3check.net/?host=nlb`.
 
 ## Приоритет
 

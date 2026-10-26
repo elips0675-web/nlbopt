@@ -14,7 +14,7 @@
 ## Проблема 1: неверный MIME
 
 ```bash
-curl -sI https://nlb.by/local/templates/index_2026/assets/fonts/raleway/1Ptug8zYS_SKggPNyCkIT5lu.woff2
+curl -sI https://nlb/local/templates/index_2026/assets/fonts/raleway/1Ptug8zYS_SKggPNyCkIT5lu.woff2
 # Content-Type: application/force-download
 ```
 
@@ -111,10 +111,10 @@ body { font-family: 'Raleway', 'Raleway-fallback', Arial, sans-serif; }
 
 ```bash
 # MIME
-curl -sI https://nlb.by/local/templates/index_2026/assets/fonts/raleway/1Ptug8zYS_SKggPNyCkIT5lu.woff2 | grep -i content-type
+curl -sI https://nlb/local/templates/index_2026/assets/fonts/raleway/1Ptug8zYS_SKggPNyCkIT5lu.woff2 | grep -i content-type
 
 # preload в HTML
-curl -s https://nlb.by/ | grep -c 'rel="preload".*woff2'
+curl -s https://nlb/ | grep -c 'rel="preload".*woff2'
 
 # сколько шрифтов реально грузится
 # DevTools → Network → фильтр Font

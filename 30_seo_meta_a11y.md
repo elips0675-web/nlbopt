@@ -12,15 +12,15 @@ SEO 83 — это **10 из 12** аудитов категории. Не про�
 
 ## 1. Дублирующийся хост
 
-`https://nlb.by/` и `https://www.nlb.by/` отдают **одинаковый HTML 200 OK** (218 884 байта, одинаковый title). Canonical при этом отсутствует, а sitemap использует `www`.
+`https://nlb/` и `https://www.nlb/` отдают **одинаковый HTML 200 OK** (218 884 байта, одинаковый title). Canonical при этом отсутствует, а sitemap использует `www`.
 
 Исправление — выбрать один хост и 301 на него:
 
 ```nginx
 server {
     listen 443 ssl;
-    server_name nlb.by;
-    return 301 https://www.nlb.by$request_uri;
+    server_name nlb;
+    return 301 https://www.nlb$request_uri;
 }
 ```
 
@@ -49,7 +49,7 @@ $APPLICATION->SetPageProperty("description", strip_tags($arResult["PREVIEW_TEXT"
 Проверка:
 
 ```bash
-curl -s https://nlb.by/ | grep -o '<meta name="description"[^>]*>'
+curl -s https://nlb/ | grep -o '<meta name="description"[^>]*>'
 ```
 
 ## 3. Canonical
@@ -58,7 +58,7 @@ curl -s https://nlb.by/ | grep -o '<meta name="description"[^>]*>'
 
 ```php
 // header.php, после <head>
-$canonical = "https://www.nlb.by" . $APPLICATION->GetCurPage();
+$canonical = "https://www.nlb" . $APPLICATION->GetCurPage();
 // убрать query-строку, кроме значимых параметров пагинации
 ?>
 <link rel="canonical" href="<?= htmlspecialchars($canonical) ?>">
@@ -76,7 +76,7 @@ $canonical = "https://www.nlb.by" . $APPLICATION->GetCurPage();
 <meta property="og:title" content="<?= htmlspecialchars($APPLICATION->GetTitle()) ?>">
 <meta property="og:description" content="...">
 <meta property="og:url" content="<?= htmlspecialchars($canonical) ?>">
-<meta property="og:image" content="https://www.nlb.by/upload/og-default.jpg">
+<meta property="og:image" content="https://www.nlb/upload/og-default.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -96,7 +96,7 @@ $canonical = "https://www.nlb.by" . $APPLICATION->GetCurPage();
 Проверка:
 
 ```bash
-curl -s https://nlb.by/ | grep -o '<h1' | wc -l   # должно быть 1
+curl -s https://nlb/ | grep -o '<h1' | wc -l   # должно быть 1
 ```
 
 ## 6. Alt у изображений
@@ -163,7 +163,7 @@ Lighthouse: `color-contrast` и `target-size`.
 4. Добавить в `robots.txt`:
 
 ```
-Sitemap: https://www.nlb.by/sitemap_index.xml
+Sitemap: https://www.nlb/sitemap_index.xml
 ```
 
 5. Проверить в Google Search Console → «Файлы Sitemap» и Яндекс.Вебмастер.
@@ -173,10 +173,10 @@ Sitemap: https://www.nlb.by/sitemap_index.xml
 Есть три языковые версии: `/` (ru), `/by/` (be), `/en/` (en), но `hreflang` не размечен. Добавить в `<head>` каждой версии:
 
 ```html
-<link rel="alternate" hreflang="ru" href="https://www.nlb.by/">
-<link rel="alternate" hreflang="be" href="https://www.nlb.by/by/">
-<link rel="alternate" hreflang="en" href="https://www.nlb.by/en/">
-<link rel="alternate" hreflang="x-default" href="https://www.nlb.by/">
+<link rel="alternate" hreflang="ru" href="https://www.nlb/">
+<link rel="alternate" hreflang="be" href="https://www.nlb/by/">
+<link rel="alternate" hreflang="en" href="https://www.nlb/en/">
+<link rel="alternate" hreflang="x-default" href="https://www.nlb/">
 ```
 
 ## 11. Мелочи, которые уже в порядке
@@ -201,17 +201,17 @@ Lighthouse 13.3 показывает **1/2**. Это отдельная эксп
 
 ```bash
 # description / canonical / og / h1
-curl -s https://nlb.by/ | grep -c 'name="description"'
-curl -s https://nlb.by/ | grep -c 'rel="canonical"'
-curl -s https://nlb.by/ | grep -c 'property="og:'
-curl -s https://nlb.by/ | grep -o '<h1' | wc -l
+curl -s https://nlb/ | grep -c 'name="description"'
+curl -s https://nlb/ | grep -c 'rel="canonical"'
+curl -s https://nlb/ | grep -c 'property="og:'
+curl -s https://nlb/ | grep -o '<h1' | wc -l
 
 # дублирующийся хост
-curl -sI https://nlb.by/ | head -1
-curl -sI https://www.nlb.by/ | head -1
+curl -sI https://nlb/ | head -1
+curl -sI https://www.nlb/ | head -1
 
 # sitemap
-curl -s https://nlb.by/robots.txt | grep -i sitemap
+curl -s https://nlb/robots.txt | grep -i sitemap
 ```
 
 Онлайн: Google Rich Results Test, Schema Validator, Screaming Frog (дубли title/description, битые ссылки), axe DevTools (контраст, alt, target-size).
@@ -219,7 +219,7 @@ curl -s https://nlb.by/robots.txt | grep -i sitemap
 ## Приоритет
 
 1. **Meta description + canonical** — 2 часа, ровно эти два аудита держат SEO на 83; после них 100.
-2. **301 на один хост** (`nlb.by` / `www.nlb.by`) — 1 час, убирает дубли на уровне сервера.
+2. **301 на один хост** (`nlb` / `www.nlb`) — 1 час, убирает дубли на уровне сервера.
 3. **Open Graph** — 1 час, нормальные карточки при репостах.
 4. **Sitemap** — 2–4 часа, иначе 37 тысяч URL живут в 2018 году.
 5. **Один H1, alt, aria-label, контраст, тач-цели** — 1 день по всему шаблону; это же поднимает Agentic Browsing с 1/2 до 2/2.

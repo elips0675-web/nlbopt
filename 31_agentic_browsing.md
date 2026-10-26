@@ -127,7 +127,7 @@ Agentic Browsing — новая экспериментальная катего�
 
 ### Готовый файл для nlb
 
-Положить в корень сайта: `https://www.nlb.by/llms.txt`. Пути проверить и заменить на реальные разделы.
+Положить в корень сайта: `https://www.nlb/llms.txt`. Пути проверить и заменить на реальные разделы.
 
 ```markdown
 # Национальная библиотека Беларуси
@@ -136,20 +136,20 @@ Agentic Browsing — новая экспериментальная катего�
 
 ## Основное
 
-- [Главная страница](https://www.nlb.by/): новости, анонсы, быстрые ссылки.
-- [Новости](https://www.nlb.by/content/news/): события и объявления библиотеки.
-- [Электронный каталог](https://www.nlb.by/): поиск по фондам библиотеки.
-- [Электронная библиотека](https://elib.nlb.by/): цифровые коллекции и полнотекстовые документы.
+- [Главная страница](https://www.nlb/): новости, анонсы, быстрые ссылки.
+- [Новости](https://www.nlb/content/news/): события и объявления библиотеки.
+- [Электронный каталог](https://www.nlb/): поиск по фондам библиотеки.
+- [Электронная библиотека](https://elib.nlb/): цифровые коллекции и полнотекстовые документы.
 
 ## Языковые версии
 
-- [Беларуская версія](https://www.nlb.by/by/)
-- [English version](https://www.nlb.by/en/)
+- [Беларуская версія](https://www.nlb/by/)
+- [English version](https://www.nlb/en/)
 
 ## О библиотеке
 
-- [История и миссия](https://www.nlb.by/about/): сведения о библиотеке.
-- [Контакты и часы работы](https://www.nlb.by/contacts/): адрес, режим работы, телефоны.
+- [История и миссия](https://www.nlb/about/): сведения о библиотеке.
+- [Контакты и часы работы](https://www.nlb/contacts/): адрес, режим работы, телефоны.
 ```
 
 Требования к содержимому: только публичные страницы, без `/bitrix/`, `/upload/`, `/adminer.php`; ссылки — на канонический хост (`www`, если выбран он); описание — 1–2 предложения, без маркетинга.
@@ -163,7 +163,7 @@ Agentic Browsing — новая экспериментальная катего�
 Найти правило:
 
 ```bash
-grep -rn --include=".htaccess" -E "\.txt|FilesMatch|Require all denied" /var/www/nlb.by/
+grep -rn --include=".htaccess" -E "\.txt|FilesMatch|Require all denied" /var/www/nlb/
 ```
 
 Типовые причины:
@@ -201,14 +201,14 @@ location = /llms.txt {
 
 Порядок:
 
-1. Починить отдачу `.txt` — `curl -I https://www.nlb.by/llms.txt` должен вернуть **200**, а не 403.
+1. Починить отдачу `.txt` — `curl -I https://www.nlb/llms.txt` должен вернуть **200**, а не 403.
 2. Только потом загружать файл. Если оставить 403 при существующем файле — будет fail, а не N/A.
 3. Проверить содержимое:
 
 ```bash
-curl -s https://www.nlb.by/llms.txt | head -5
-curl -s https://www.nlb.by/llms.txt | grep -cE '^# .+'
-curl -s https://www.nlb.by/llms.txt | grep -cE '\[.+\]\(.+\)'
+curl -s https://www.nlb/llms.txt | head -5
+curl -s https://www.nlb/llms.txt | grep -cE '^# .+'
+curl -s https://www.nlb/llms.txt | grep -cE '\[.+\]\(.+\)'
 ```
 
 Content-Type: `text/plain; charset=utf-8` или `text/markdown; charset=utf-8` — оба нормально.
@@ -242,10 +242,10 @@ WebMCP — API, которым сайт объявляет агенту свои
 
 ```bash
 # только Agentic Browsing, с открытием отчёта
-npx lighthouse https://nlb.by/ --only-categories=agentic-browsing --view
+npx lighthouse https://nlb/ --only-categories=agentic-browsing --view
 
 # JSON для CI
-npx lighthouse https://nlb.by/ --only-categories=agentic-browsing \
+npx lighthouse https://nlb/ --only-categories=agentic-browsing \
   --output=json --output-path=./agentic.json
 ```
 

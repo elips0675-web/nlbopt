@@ -30,7 +30,7 @@
 После включения проверьте, что HTML перестал отдаваться с `no-store`:
 
 ```bash
-curl -sI https://nlb.by/ | grep -iE 'cache-control|x-bitrix'
+curl -sI https://nlb/ | grep -iE 'cache-control|x-bitrix'
 ```
 
 Ожидаемо: `X-Bitrix-Composite: Cache` и `Cache-Control` без `no-store`.
@@ -80,7 +80,7 @@ server {
 Проверка:
 
 ```bash
-curl -sI https://nlb.by/local/templates/index_2026/assets/css/main.css | grep -iE 'cache-control|vary'
+curl -sI https://nlb/local/templates/index_2026/assets/css/main.css | grep -iE 'cache-control|vary'
 # ожидаем: public, max-age=31536000, immutable  +  Vary: Accept, Accept-Encoding
 ```
 

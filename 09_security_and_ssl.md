@@ -24,7 +24,7 @@
 Проверка одной командой:
 
 ```bash
-curl -sI https://nlb.by/ | grep -iE 'strict-transport|content-security|referrer|permissions|cross-origin|x-powered|x-frame|x-content'
+curl -sI https://nlb/ | grep -iE 'strict-transport|content-security|referrer|permissions|cross-origin|x-powered|x-frame|x-content'
 ```
 
 ## 1. HSTS — начинать с малого
@@ -95,7 +95,7 @@ fastcgi_hide_header X-Powered-CMS;
 fastcgi_hide_header X-Powered-By;
 ```
 
-Проверка: `curl -sI https://nlb.by/ | grep -i powered` → пусто.
+Проверка: `curl -sI https://nlb/ | grep -i powered` → пусто.
 
 Заодно уберите `Vary: HTTPS` (нестандартный, никому не нужен) — он приходит из PHP; ищите в `init.php`/`.htaccess` `header("Vary: HTTPS")`.
 
@@ -157,10 +157,10 @@ location /bitrix/ {
 
 ## Проверка
 
-- https://securityheaders.com/?q=nlb.by — цель A/A+
-- https://www.ssllabs.com/ssltest/analyze.html?d=nlb.by — цель A+
-- https://observatory.mozilla.org/analyze/nlb.by
-- `curl -sI https://nlb.by/ | grep -i strict-transport`
+- https://securityheaders.com/?q=nlb — цель A/A+
+- https://www.ssllabs.com/ssltest/analyze.html?d=nlb — цель A+
+- https://observatory.mozilla.org/analyze/nlb
+- `curl -sI https://nlb/ | grep -i strict-transport`
 
 ## Порядок внедрения
 

@@ -28,8 +28,8 @@ Lighthouse 13.3 уточняет: **Render-blocking requests — −170 мс**, 
 ### Шаг 1. Сгенерировать критический CSS
 
 ```bash
-npx critical https://nlb.by/ \
-  --base https://nlb.by/ \
+npx critical https://nlb/ \
+  --base https://nlb/ \
   --inline \
   --width 390 --height 844 \
   --minify \
@@ -39,7 +39,7 @@ npx critical https://nlb.by/ \
 Или через Penthouse (даёт более чистый результат):
 
 ```bash
-npx penthouse https://nlb.by/ /tmp/critical.css \
+npx penthouse https://nlb/ /tmp/critical.css \
   --width 390 --height 844 --maxEmbeddedBase64Length 0
 ```
 

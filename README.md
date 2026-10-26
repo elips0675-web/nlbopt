@@ -315,7 +315,7 @@ CLS уже **0** — это не проблема и не резерв. Глав
 | **Google Search Console** | Core Web Vitals от реальных пользователей. | Раздел «Core Web Vitals» и «Мобильная удобность». |
 | **W3C Validator** | Валидация HTML/CSS. | Ошибки ломают поведение в разных браузерах. |
 | **Schema Validator** | JSON-LD/Microdata/OG. | На главной 2 блока JSON-LD — проверить. |
-| **Lighthouse (Agentic Browsing)** | 1/2: accessibility tree, CLS, `llms.txt`, WebMCP. | `npx lighthouse https://nlb.by/ --only-categories=agentic-browsing` — см. `31_agentic_browsing.md`. |
+| **Lighthouse (Agentic Browsing)** | 1/2: accessibility tree, CLS, `llms.txt`, WebMCP. | `npx lighthouse https://nlb/ --only-categories=agentic-browsing` — см. `31_agentic_browsing.md`. |
 | **Webhint** | Линтер безопасности/производительности/a11y/SEO. | В CI/CD или разово. |
 | **JSON-LD Playground** | Визуализация структурированных данных. | Вставить JSON-LD с главной. |
 
@@ -348,7 +348,7 @@ CLS уже **0** — это не проблема и не резерв. Глав
 | **Hardenize** | DNS, SPF, DMARC, TLS. | Комплексный чек инфраструктуры. |
 | **Wappalyzer** | Технологии сайта. | Быстрый тех-анализ. |
 | **Burp Suite Community** | Перехват трафика, отладка API. | Пройтись по формам и API. |
-| **WhatWeb** | CMS, библиотеки, версии из терминала. | `whatweb nlb.by`. |
+| **WhatWeb** | CMS, библиотеки, версии из терминала. | `whatweb nlb`. |
 | **Sitebulb** | SEO-аудит с визуализациями. | Раз в месяц. |
 
 ---

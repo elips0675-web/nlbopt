@@ -86,7 +86,7 @@ AddEventHandler("main", "OnEndBufferContent", function (&$content) {
 Проверка после применения:
 
 ```bash
-curl -s https://nlb.by/ | grep -c 'loading="lazy"'   # ожидаем ~35
+curl -s https://nlb/ | grep -c 'loading="lazy"'   # ожидаем ~35
 ```
 
 ## Чего не делать
@@ -106,11 +106,11 @@ curl -s https://nlb.by/ | grep -c 'loading="lazy"'   # ожидаем ~35
 
 ```bash
 # сколько картинок и сколько ленивых
-curl -s https://nlb.by/ | grep -o '<img' | wc -l
-curl -s https://nlb.by/ | grep -c 'loading="lazy"'
+curl -s https://nlb/ | grep -o '<img' | wc -l
+curl -s https://nlb/ | grep -c 'loading="lazy"'
 
 # размеры
-curl -s https://nlb.by/ | grep -c 'width=' 
+curl -s https://nlb/ | grep -c 'width='
 ```
 
 DevTools → Network: при первой загрузке картинки ниже сгиба не должны появляться, пока не проскроллите.

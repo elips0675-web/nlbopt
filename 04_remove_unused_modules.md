@@ -19,7 +19,7 @@ Lighthouse 13.3 подтверждает цифрами: **Reduce unused JavaScr
 Проверка, что они всё ещё подключены:
 
 ```bash
-curl -s https://nlb.by/ | grep -o 'src="[^"]*\(pull\|protobuf\|dexie\|rest\.client\)[^"]*"'
+curl -s https://nlb/ | grep -o 'src="[^"]*\(pull\|protobuf\|dexie\|rest\.client\)[^"]*"'
 ```
 
 ## Способ 1: убрать из HTML (быстро, обратимо)
@@ -62,7 +62,7 @@ AddEventHandler("main", "OnEndBufferContent", function (&$content) {
 
 ## Проверка после удаления
 
-1. `curl -s https://nlb.by/ | grep -c protobuf` → `0`.
+1. `curl -s https://nlb/ | grep -c protobuf` → `0`.
 2. Открыть сайт, DevTools → Console: не должно быть ошибок `BX.PULL`, `Dexie`, `protobuf`.
 3. Проверить: форма входа, поиск, cookie-баннер, меню, слайдер, переключатель «Слабовидящим».
 4. `/bitrix/admin/` — должен открываться (403/логин), админка не должна зависеть от публичного Pull.

@@ -4,7 +4,7 @@
 
 Lighthouse 13.3 отдельно отмечает **LCP request discovery** и **Network dependency tree**: LCP-фон задан в CSS, поэтому браузер узнаёт о нём только после разбора `main.css` (HTML → CSS → фон/шрифты). Preload ниже убирает эту задержку и закрывает оба замечания.
 
-## Что стоит preload-ить на nlb.by
+## Что стоит preload-ить на nlb
 
 Только три ресурса. Больше — вредно: preload конкурирует с LCP за приоритет.
 
@@ -106,8 +106,8 @@ document.querySelectorAll('iframe[data-src]').forEach(function (frame) {
 ## Проверка
 
 ```bash
-curl -s https://nlb.by/ | grep -c 'rel="preload"'      # ожидаем 3
-curl -s https://nlb.by/ | grep -o 'hero-bg[^"]*'       # hero preload есть
+curl -s https://nlb/ | grep -c 'rel="preload"'      # ожидаем 3
+curl -s https://nlb/ | grep -o 'hero-bg[^"]*'       # hero preload есть
 ```
 
 DevTools → Network: hero и шрифты должны стартовать в первых строках, до `main.css`.

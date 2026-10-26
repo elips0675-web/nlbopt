@@ -53,9 +53,9 @@ server {
 
 ```bash
 # с WebP
-curl -sI -H "Accept: image/webp" https://nlb.by/upload/.../OON.png | grep -i content-type
+curl -sI -H "Accept: image/webp" https://nlb/upload/.../OON.png | grep -i content-type
 # без WebP
-curl -sI -H "Accept: image/*"     https://nlb.by/upload/.../OON.png | grep -i content-type
+curl -sI -H "Accept: image/*"     https://nlb/upload/.../OON.png | grep -i content-type
 ```
 
 ## Вариант B: Битрикс (`CFile::ResizeImageGet` с WebP)
@@ -142,10 +142,10 @@ AddEventHandler("main", "OnAfterFileSave", function ($arFile) {
 
 ```bash
 # вес главной до/после
-curl -s -o /dev/null -w "%{size_download}\n" https://nlb.by/
+curl -s -o /dev/null -w "%{size_download}\n" https://nlb/
 
 # есть ли WebP-копии
-curl -sI https://nlb.by/upload/iblock/b26/.../OON.png.webp | head -1
+curl -sI https://nlb/upload/iblock/b26/.../OON.png.webp | head -1
 ```
 
 Цель: главная ≤ 1,5 МБ transfer, ни одна картинка не тяжелее 250 КБ.
