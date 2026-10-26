@@ -1,5 +1,31 @@
 # Changelog
 
+## 26.10.2026 — Lighthouse 13.3: реальные оценки и Agentic Browsing
+
+Прогон в Chrome DevTools (Lighthouse 13.3, эмуляция Moto G / Slow 4G): **Performance 89, Accessibility 83, Best Practices 100, SEO 83, Agentic Browsing 1/2**; LCP 2,3 с, FCP 1,4 с, TBT 390 мс, CLS 0, SI 1,5 с. Пересобрал приоритеты под эти цифры.
+
+### Добавлено
+
+- `31_agentic_browsing.md` — как считается дробь, почему 1/2 (accessibility tree), формат `llms.txt` с готовым файлом для nlb, починка 403 на `.txt` в Apache/nginx, WebMCP и границы пользы.
+
+### Обновлено
+
+- `README.md` — отдельная таблица Lighthouse 13.3 (мобильный), объяснение, почему 89 при 8 МБ картинок, новый порядок приоритетов (TBT и JS — первыми, картинки — трафик, а не балл), новый прогноз, ссылка на `31`.
+- `29_audit_2026_10_26.md` — раздел Lighthouse 13.3 с LCP/FCP/TBT/CLS/SI, объяснение SEO 67 → 83 (версия Lighthouse, а не изменения сайта), Agentic 1/2, переписан прогноз.
+- `30_seo_meta_a11y.md` — SEO 83 = 10 из 12, валят только `meta-description` и `canonical`; добавлен раздел про Agentic и `llms.txt`; приоритеты переставлены.
+- `01_lazy_load_images.md` — CLS уже 0: `lazy` остаётся ради трафика, `width`/`height` — страховка, а не срочный фикс.
+- `12_full_audit_checklist.md`, `14_audit_checklist_with_references.md` — блок Agentic Browsing, `llms.txt`, статус 1/2, итого 88 пунктов.
+- `CHANGELOG.md` — эта запись.
+
+### Что изменилось в выводах
+
+- **Performance 89 не отменяет работу с картинками**, но и не двигается ими: балл считается по LCP/TBT/CLS. 8 МБ — это трафик и полевые Core Web Vitals. Главный резерв балла — **TBT 390 мс**, то есть лишний JS.
+- **SEO 67 → 83** — не улучшение сайта, а разница версий Lighthouse. Сравнивать эти числа нельзя; внутри 13.3 SEO держат два аудита: description и canonical.
+- **CLS 0** — размеры картинок больше не приоритет, но их стоит добавить как защиту от регрессий.
+- **Agentic 1/2** — провалено дерево доступности (3 ссылки без имени), CLS проходит, `llms.txt` в знаменатель не попал из-за 403 на `.txt`.
+
+---
+
 ## 26.10.2026 — ревизия после редизайна nlb.by
 
 Сайт переехал на новый шаблон `/local/templates/index_2026/`. Перепроверил всё заново (curl + Resource Timing + Lighthouse) и обновил репозиторий под фактическое состояние.

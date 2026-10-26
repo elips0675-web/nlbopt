@@ -4,7 +4,7 @@
 
 Каждый пункт — задача для проверки. Напротив — файл в репозитории с готовым решением/инструкцией. Делай по порядку: **изображения → JS/CSS → кэш → шрифты → виджеты → безопасность**.
 
-> **Статус на 26.10.2026 (после редизайна):** закрыты п. 2.1–2.3 (минификация), 3.1–3.2 (CSS-бандл), 5.1–5.3 (self-hosted шрифты), 5.5 (megavenue), 6.8 (X-Frame/X-Content), 6.10–6.12 (служебные папки). Открыты: изображения (1.1–1.7), лишний JS (2.4), композит и кэш (4.1–4.2), Brotli (4.3), HSTS/CSP/Referrer-Policy (6.5–6.9). Детали и цифры — в [`29_audit_2026_10_26.md`](29_audit_2026_10_26.md).
+> **Статус на 26.10.2026 (после редизайна):** Lighthouse 13.3 (мобильный) — **Performance 89, A11y 83, SEO 83, Best Practices 100, Agentic 1/2**. Закрыты п. 2.1–2.3 (минификация), 3.1–3.2 (CSS-бандл), 5.1–5.3 (self-hosted шрифты), 5.5 (megavenue), 6.8 (X-Frame/X-Content), 6.10–6.12 (служебные папки). Открыты: изображения (1.1–1.7) — это трафик, а не балл; лишний JS и TBT 390 мс (2.4); композит и кэш (4.1–4.2); Brotli (4.3); доступность и `llms.txt` (12.1–12.3); HSTS/CSP/Referrer-Policy (6.5–6.9). Детали и цифры — в [`29_audit_2026_10_26.md`](29_audit_2026_10_26.md).
 
 ---
 
@@ -101,7 +101,8 @@
 | 9. Brotli / HTTP/3 / CDN / AVIF | 4 | | |
 | 10. CSS containment / Server-Timing | 2 | | |
 | 11. Security Hardening (2FA, WAF, SSH, SRI, DNS) | 5 | | |
-| **Итого** | **85** | | |
+| 12. Agentic Browsing (a11y tree, CLS, `llms.txt`) | 3 | 1 | 2 |
+| **Итого** | **88** | | |
 
 ---
 
@@ -147,6 +148,14 @@
 | 11.4 | Настроить SPF/DKIM/DMARC, DNSSEC, CAA | [`26_email_dns_security.md`](26_email_dns_security.md) — Email + DNS security | |
 | 11.5 | Регулярное сканирование (Nikto, OWASP ZAP, Nuclei), мониторинг CVE | [`27_vulnerability_scanning.md`](27_vulnerability_scanning.md) — Vuln scanning + CVE | |
 
+## 12. Agentic Browsing (Lighthouse 13.3)
+
+| № | Что проверить / сделать | Где решение | Статус |
+|---|------------------------|-------------|--------|
+| 12.1 | Доступные имена у ссылок и кнопок — от этого зависит accessibility tree | [`30_seo_meta_a11y.md`](30_seo_meta_a11y.md), [`31_agentic_browsing.md`](31_agentic_browsing.md) | ❌ 1/2 |
+| 12.2 | CLS = 0 (стабильность макета для агентов) | [`01_lazy_load_images.md`](01_lazy_load_images.md) — размеры картинок | ✅ |
+| 12.3 | `llms.txt` в корне + `.txt` отдаётся с 200, а не 403 | [`31_agentic_browsing.md`](31_agentic_browsing.md) — формат и Apache | ❌ 403 |
+
 ---
 
 ## Структура репозитория
@@ -179,4 +188,8 @@
 25_session_sri_csp.md           — Session security / SRI / CSP strict-dynamic
 26_email_dns_security.md        — Email security (SPF/DKIM/DMARC) + DNS (DNSSEC/CAA)
 27_vulnerability_scanning.md    — Vulnerability scanning + CVE monitoring
+28_nmap_scanning.md             — Nmap: порты, NSE, проверки Bitrix
+29_audit_2026_10_26.md          — Аудит после редизайна: замеры и выводы
+30_seo_meta_a11y.md             — SEO, мета-теги, доступность
+31_agentic_browsing.md          — Agentic Browsing: a11y tree, CLS, llms.txt, WebMCP
 ```
