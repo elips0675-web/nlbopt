@@ -1,90 +1,103 @@
-# 7. Отложенная загрузка Jivosite и megavenue.by
+# 7. Отложенная загрузка сторонних виджетов (Jivo)
 
-## Вставьте этот код вместо обычного подключения виджетов
+**Актуально на 26.10.2026.** megavenue.by с сайта убран — от старой версии инструкции осталась только часть про Jivo.
+
+## Что грузится сейчас
+
+```html
+<script src="https://code-eu1.jivosite.com/widget/TnYiZsuEsx"
+        async data-skip-moving="true"></script>
+```
+
+Скрипт стоит в `<head>` (атрибут `data-skip-moving` заставляет Битрикс не переносить его вниз). В результате на каждой странице открывается **8 запросов на 3 домена**: `code-eu1.jivosite.com`, `code.jivosite.com`, `node-sb1-az2-23.jivosite.com`.
+
+Проблема не в весе (он умеренный), а в том, что виджет стартует одновременно с LCP-ресурсами и занимает main thread у 100% посетителей, из которых чат открывают единицы.
+
+## Решение: грузить по взаимодействию или в idle
+
+Замените тег в шаблоне (обычно `/local/templates/index_2026/header.php` или подключаемый файл виджета) на загрузчик в конце `<body>`:
 
 ```html
 <script>
-// Отложенная загрузка сторонних виджетов
-(function() {
-    function loadScript(url, callback) {
-        var script = document.createElement('script');
-        script.src = url;
-        script.async = true;
-        script.onload = callback || function(){};
-        document.body.appendChild(script);
-    }
-
-    // Загружаем после загрузки страницы + 3 сек или по первому взаимодействию
-    function loadWidgets() {
-        // Jivosite
-        loadScript('//code.jivosite.com/script/widget/ВАШ_ИД');
-        
-        // Megavenue
-        loadScript('//megavenue.by/путь/к/скрипту');
-    }
-
-    // Загрузка по первому взаимодействию или через 5 секунд
+(function () {
+    var WIDGET = 'https://code-eu1.jivosite.com/widget/TnYiZsuEsx';
     var loaded = false;
-    function initOnInteraction() {
+
+    function loadJivo() {
         if (loaded) return;
         loaded = true;
-        loadWidgets();
-        document.removeEventListener('scroll', initOnInteraction);
-        document.removeEventListener('click', initOnInteraction);
-        document.removeEventListener('touchstart', initOnInteraction);
+        var s = document.createElement('script');
+        s.src = WIDGET;
+        s.async = true;
+        document.body.appendChild(s);
     }
 
-    // Таймаут — если пользователь бездействует
-    setTimeout(initOnInteraction, 5000);
+    function schedule() {
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadJivo, { timeout: 6000 });
+        } else {
+            setTimeout(loadJivo, 4000);
+        }
+    }
 
-    // По первому взаимодействию
-    document.addEventListener('scroll', initOnInteraction, { once: true });
-    document.addEventListener('click', initOnInteraction, { once: true });
-    document.addEventListener('touchstart', initOnInteraction, { once: true });
+    if (document.readyState === 'complete') {
+        schedule();
+    } else {
+        window.addEventListener('load', schedule, { once: true });
+    }
+
+    // Если пользователь начал взаимодействовать раньше — грузим сразу
+    ['scroll', 'click', 'touchstart', 'keydown'].forEach(function (evt) {
+        window.addEventListener(evt, loadJivo, { once: true, passive: true });
+    });
 })();
 </script>
 ```
 
-**ВАЖНО:** Замените `ВАШ_ИД` на реальный ID Jivosite и URL для megavenue.by.
+Что это даёт:
 
-## Или через requestIdleCallback (современный подход)
+- до первого скролла/клика или до `load` + idle сторонних запросов нет;
+- если человек идёт в чат — виджет загрузится по первому же действию;
+- LCP и TBT не конкурируют с чатом.
+
+## Если чат должен быть виден сразу
+
+Компромисс: оставить кнопку-заглушку (локальную), а сам Jivo грузить по клику на неё:
 
 ```html
+<button type="button" class="chat-launcher" onclick="window.__loadJivo()">
+    Написать в чат
+</button>
 <script>
-(function() {
-    function loadJivosite() {
-        var s = document.createElement('script');
-        s.src = '//code.jivosite.com/script/widget/ВАШ_ИД';
-        s.async = true;
-        document.body.appendChild(s);
-    }
-
-    function loadMegavenue() {
-        var s = document.createElement('script');
-        s.src = '//megavenue.by/путь/к/скрипту';
-        s.async = true;
-        document.body.appendChild(s);
-    }
-
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(function() {
-            loadJivosite();
-            loadMegavenue();
-        }, { timeout: 5000 });
-    } else {
-        // Fallback для старых браузеров
-        setTimeout(function() {
-            loadJivosite();
-            loadMegavenue();
-        }, 3000);
-    }
-})();
+window.__loadJivo = function () {
+    if (window.__jivoLoaded) return;
+    window.__jivoLoaded = true;
+    var s = document.createElement('script');
+    s.src = 'https://code-eu1.jivosite.com/widget/TnYiZsuEsx';
+    s.async = true;
+    document.body.appendChild(s);
+    setTimeout(function () {
+        if (window.jivo_api && window.jivo_api.open) window.jivo_api.open();
+    }, 1500);
+};
 </script>
 ```
+
+## Чего не делать
+
+- Не оставляйте `data-skip-moving="true"` на новом загрузчике — он снова затащит код в `<head>`.
+- Не используйте `defer`/`async` на самом теге Jivo: это не откладывает загрузку, а только не блокирует парсер.
+- Не грузите виджет в `DOMContentLoaded` — это тот же момент, когда стартуют картинки первого экрана.
 
 ## Проверка
 
-1. Откройте DevTools → Network
-2. Обновите страницу — Jivosite и megavenue не должны грузиться сразу
-3. Через 5 сек или после клика/скролла — должны появиться в списке запросов
-4. Проверьте, что виджеты работают (чат открывается)
+1. DevTools → Network, фильтр `jivosite`: при первой загрузке — **0 запросов**.
+2. Проскроллить/кликнуть → появляются запросы, чат открывается.
+3. Lighthouse TBT до/после — должен упасть.
+4. Проверить, что кнопка чата доступна с клавиатуры (a11y): у Jivo она появляется после загрузки.
+
+## Ожидаемый эффект
+
+- −8 сторонних запросов на старте;
+- −3 DNS/TLS-соединения;
+- меньше конкуренции за main thread — особенно заметно на мобиле.

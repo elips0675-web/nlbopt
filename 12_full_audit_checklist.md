@@ -70,16 +70,17 @@
 
 ### Сервер / Кэширование
 
-- [ ] **Gzip/Brotli** включён в `.htaccess` или nginx
-- [ ] **Кэширование статики** — далёкий `Expires` / `Cache-Control` для CSS, JS, изображений
-- [ ] **Композитный режим** (HTML-кэш) включён в `.settings.php`
-- [ ] **HTTP/2 или HTTP/3** на сервере
+- [ ] **Gzip/Brotli** включён в `.htaccess` или nginx *(на 26.10.2026 — только gzip, Brotli нет)*
+- [ ] **Кэширование статики** — далёкий `Expires` / `Cache-Control` для CSS, JS, изображений *(сейчас 30 дней, без `immutable`)*
+- [ ] **Композитный режим** (HTML-кэш) включён в `.settings.php` *(сейчас HTML отдаётся с `no-store`)*
+- [ ] **HTTP/2 или HTTP/3** на сервере *(HTTP/2 и TLS 1.3 есть, HTTP/3 нет)*
 - [ ] Медленные SQL-запросы — `after_connect.php` / `dbconn.php`
 
 ### Шрифты и внешние ресурсы
 
-- [ ] Google Fonts — `preconnect` + `display=swap`
-- [ ] Виджеты, кнопки соцсетей — отложенная загрузка
+- [x] Шрифты self-hosted (Raleway/Lora, WOFF2, `font-display: swap`) — сделано в шаблоне `index_2026`
+- [ ] Шрифты: preload двух кириллических WOFF2, MIME `font/woff2`, кэш на год
+- [ ] Виджеты, кнопки соцсетей — отложенная загрузка *(Jivo всё ещё в `<head>`)*
 
 ---
 

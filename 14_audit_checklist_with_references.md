@@ -4,6 +4,8 @@
 
 Каждый пункт — задача для проверки. Напротив — файл в репозитории с готовым решением/инструкцией. Делай по порядку: **изображения → JS/CSS → кэш → шрифты → виджеты → безопасность**.
 
+> **Статус на 26.10.2026 (после редизайна):** закрыты п. 2.1–2.3 (минификация), 3.1–3.2 (CSS-бандл), 5.1–5.3 (self-hosted шрифты), 5.5 (megavenue), 6.8 (X-Frame/X-Content), 6.10–6.12 (служебные папки). Открыты: изображения (1.1–1.7), лишний JS (2.4), композит и кэш (4.1–4.2), Brotli (4.3), HSTS/CSP/Referrer-Policy (6.5–6.9). Детали и цифры — в [`29_audit_2026_10_26.md`](29_audit_2026_10_26.md).
+
 ---
 
 ## 1. Изображения (80% проблемы)
@@ -53,11 +55,11 @@
 
 | № | Что проверить / сделать | Где решение | Статус |
 |---|------------------------|-------------|--------|
-| 5.1 | Добавить `preconnect` для Google Fonts | [`06_fonts_display_swap.md`](06_fonts_display_swap.md) — `fonts.googleapis.com` + `fonts.gstatic.com` | |
-| 5.2 | Установить `display=swap` в URL Google Fonts | [`06_fonts_display_swap.md`](06_fonts_display_swap.md) — параметр в href | |
-| 5.3 | Перевести шрифты на self-hosted (WOFF2) с `font-display: swap` | [`06_fonts_display_swap.md`](06_fonts_display_swap.md) — `@font-face` + `font-display: swap` | |
+| 5.1 | ~~Добавить `preconnect` для Google Fonts~~ | Неактуально: шрифты self-hosted с 26.10.2026 | ✅ |
+| 5.2 | ~~`display=swap` в URL Google Fonts~~ | Неактуально: `font-display: swap` в `fonts-local.css` | ✅ |
+| 5.3 | Шрифты self-hosted (WOFF2) с `font-display: swap` | [`06_fonts_display_swap.md`](06_fonts_display_swap.md) — сделано; остались preload, MIME, кэш | 🟡 |
 | 5.4 | Отложить загрузку Jivosite до взаимодействия с пользователем | [`07_defer_widgets.md`](07_defer_widgets.md) — событийный подход (scroll/click/touchstart) | |
-| 5.5 | Отложить загрузку megavenue.by через `requestIdleCallback` | [`07_defer_widgets.md`](07_defer_widgets.md) — `requestIdleCallback` с таймаутом 5s | |
+| 5.5 | ~~Отложить megavenue.by~~ | Виджет удалён с сайта | ✅ |
 
 ## 6. Безопасность
 

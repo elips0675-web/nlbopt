@@ -1,86 +1,111 @@
-# Preload / Resource Hints / Lazy iframe
+# 19. Preload / Resource Hints / lazy iframe
 
-## Preload критических ресурсов
+**Актуально на 26.10.2026.** Сейчас в HTML главной **ни одного** `preload`, `preconnect` или `dns-prefetch`. Iframe на главной нет.
 
-Загружает ресурсы с самым высоким приоритетом, до того как парсер HTML до них дойдёт.
+## Что стоит preload-ить на nlb.by
 
-```html
-<!-- Шрифты (обязательно crossorigin!) -->
-<link rel="preload" href="/fonts/OpenSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+Только три ресурса. Больше — вредно: preload конкурирует с LCP за приоритет.
 
-<!-- Hero-изображение первого экрана -->
-<link rel="preload" href="/upload/hero.webp" as="image">
-
-<!-- Critical CSS (если не inline) -->
-<link rel="preload" href="/bitrix/templates/.default/critical.css" as="style">
-
-<!-- JS, который нужен сразу (редко) -->
-<link rel="preload" href="/bitrix/js/main/core/core.js" as="script">
-```
-
-## Resource Hints
+### 1. Hero-фон (LCP-ресурс)
 
 ```html
-<!-- Предварительное подключение к CDN/API -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://api.jivosite.com">
-
-<!-- DNS-prefetch для старых браузеров (fallback) -->
-<link rel="dns-prefetch" href="https://cdn.cloudflare.net">
-
-<!-- Prefetch — следующая страница, которую пользователь вероятно откроет -->
-<link rel="prefetch" href="/catalog/" as="document">
-
-<!-- Prerender — полная предзагрузка страницы -->
-<link rel="prerender" href="/catalog/popular/">
+<link rel="preload" as="image"
+      href="/local/templates/index_2026/assets/hero-bg-side-2.jpg"
+      fetchpriority="high">
 ```
 
-### Когда использовать
+Сейчас это CSS `background-image` на 194 КБ, и браузер узнаёт о нём только после разбора `main.css` — то есть после FCP. Preload убирает эту задержку.
 
-| Hint | Когда |
-|------|-------|
-| `preload` | Ресурс нужен на текущей странице и критичен |
-| `preconnect` | Будет запрос на внешний домен |
-| `dns-prefetch` | Fallback для preconnect |
-| `prefetch` | Ресурс может понадобиться на следующей странице |
-| `prerender` | Пользователь почти наверняка перейдёт на эту страницу |
+После конвертации в WebP/AVIF (см. `02_webp_and_compress.md`) добавьте `type`:
 
-## Lazy load для iframe
+```html
+<link rel="preload" as="image" type="image/webp"
+      href="/local/templates/index_2026/assets/hero-bg-side-2.webp"
+      fetchpriority="high">
+```
 
-### YouTube, карты, виджеты
+Если позже сделаете адаптивный hero:
+
+```html
+<link rel="preload" as="image" type="image/webp"
+      imagesrcset="/assets/hero-640.webp 640w, /assets/hero-1280.webp 1280w"
+      imagesizes="100vw" fetchpriority="high">
+```
+
+### 2. Два кириллических шрифта
+
+```html
+<link rel="preload"
+      href="/local/templates/index_2026/assets/fonts/raleway/1Ptug8zYS_SKggPNyCkIT5lu.woff2"
+      as="font" type="font/woff2" crossorigin>
+<link rel="preload"
+      href="/local/templates/index_2026/assets/fonts/lora/0QIvMX1D_JOuMw77I-NP.woff2"
+      as="font" type="font/woff2" crossorigin>
+```
+
+`crossorigin` обязателен даже для своего домена — иначе браузер скачает файл дважды.
+
+Латиницу (47 + 37 КБ) не preload-ить: она нужна только для цифр и латинских имён.
+
+## Что НЕ preload-ить
+
+- `main.css`, `bitrix.css` — они уже блокирующие, preload ничего не ускорит.
+- `core.min.js` — 177 КБ, выполняется не сразу; preload только отнимет приоритет у hero.
+- Jivo — если внедрите отложенную загрузку (`07_defer_widgets.md`), preconnect к `jivosite.com` не нужен. Если оставляете чат сразу — тогда `preconnect` к `code-eu1.jivosite.com` имеет смысл.
+- Картинки карточек — они должны быть `lazy`, а не preload.
+
+## Resource Hints: что имеет смысл
+
+```html
+<!-- Если Jivo остаётся мгновенным -->
+<link rel="preconnect" href="https://code-eu1.jivosite.com" crossorigin>
+<link rel="dns-prefetch" href="https://code.jivosite.com">
+
+<!-- Prefetch следующей вероятной страницы (по желанию, аккуратно с трафиком) -->
+<link rel="prefetch" href="/content/events/" as="document">
+```
+
+Не добавляйте `prefetch`/`prerender` массово: на мобильном это лишний трафик.
+
+## Lazy iframe
+
+На главной iframe нет, но шаблон используется и на страницах с видео/картами. Правило:
 
 ```html
 <iframe src="about:blank"
         data-src="https://www.youtube.com/embed/VIDEO_ID"
         loading="lazy"
         width="560" height="315"
-        frameborder="0"
-        class="lazy-iframe"></iframe>
+        title="Название видео"
+        frameborder="0"></iframe>
 ```
 
-### Через IntersectionObserver
+`loading="lazy"` поддерживается всеми актуальными браузерами; для старых — IntersectionObserver:
 
 ```javascript
-document.addEventListener('DOMContentLoaded', function() {
-    var lazyIframes = document.querySelectorAll('iframe.lazy-iframe');
-    if ('IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                    var iframe = entry.target;
-                    iframe.src = iframe.dataset.src;
-                    observer.unobserve(iframe);
-                }
-            });
-        });
-        lazyIframes.forEach(function(iframe) {
-            observer.observe(iframe);
-        });
+document.querySelectorAll('iframe[data-src]').forEach(function (frame) {
+    if (!('IntersectionObserver' in window)) {
+        frame.src = frame.dataset.src;
+        return;
     }
+    var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.src = entry.target.dataset.src;
+            io.unobserve(entry.target);
+        });
+    }, { rootMargin: '200px' });
+    io.observe(frame);
 });
 ```
 
-### Проверка
+`title` у iframe обязателен для доступности (Lighthouse a11y это проверяет).
 
-DevTools → Network — iframe загружается только при скролле к нему.
+## Проверка
+
+```bash
+curl -s https://nlb.by/ | grep -c 'rel="preload"'      # ожидаем 3
+curl -s https://nlb.by/ | grep -o 'hero-bg[^"]*'       # hero preload есть
+```
+
+DevTools → Network: hero и шрифты должны стартовать в первых строках, до `main.css`.

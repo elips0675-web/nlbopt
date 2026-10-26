@@ -131,7 +131,7 @@ header("Server-Timing: db={$dbTime};php={$phpTime};composite={$cacheHit}");
 
 ### 15. Font subsetting
 
-**Суть:** Open Sans Regular весит ~150KB, но кириллице нужно только ~40KB. Вырезать через `pyftsubset` или Google Fonts trims.
+**Суть:** на nlb.by уже self-hosted Raleway/Lora, но в `fonts-local.css` 41 правило `@font-face` (cyrillic, cyrillic-ext, latin, vietnamese, math, symbols). Для русского сайта достаточно cyrillic + latin — это ~60% CSS шрифтов. Вырезать лишние подмножества через `pyftsubset`.
 
 ### 16. Уменьшить количество HTTP-запросов
 

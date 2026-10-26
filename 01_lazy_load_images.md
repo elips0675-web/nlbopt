@@ -1,62 +1,114 @@
-# 1. Добавление loading="lazy" для изображений
+# 1. `loading="lazy"` для изображений
 
-## Где править
+**Актуально на 26.10.2026** (шаблон `/local/templates/index_2026/`).
 
-В типовом Битриксе изображения выводятся через компоненты:
-- `bitrix:news.list` — афиша, новости
-- `bitrix:main.register` / `bitrix:system.auth.form`
-- Кастомные компоненты слайдера
+## Что сейчас
 
-Нужно добавить атрибут `loading="lazy"` всем `<img>`, которые находятся ниже первого экрана (примерно первые 2-3 изображения можно не трогать).
+| Страница | `<img>` | С `loading="lazy"` | Ниже первого экрана |
+|---|---|---|---|
+| Главная | 37 | **0** | 11 |
+| `/content/news/` | 22 | **0** | 17 |
 
-## Быстрый способ — через result_modifier
+Ни одного `srcset`, ни одного `width`/`height` — отсюда риск CLS. Первые две картинки в DOM — герб и флаг в шапке (`/gerb_big.jpg`, `/flag_big.jpg`), они выше сгиба и трогать их не нужно.
 
-Создайте файл `result_modifier.php` в нужном компоненте или добавьте в `init.php`:
+## Правило
+
+- Первый экран (шапка, hero, первая карточка) — **без** `lazy`, при необходимости `fetchpriority="high"`.
+- Всё, что ниже, — `loading="lazy" decoding="async"`.
+- Всем — `width` и `height` (или CSS `aspect-ratio`), иначе CLS.
+
+## Вариант A: правка шаблонов компонентов (правильный)
+
+Картинки на главной выводятся компонентами в `/local/templates/index_2026/components/`. Найдите места вывода:
+
+```bash
+grep -rn "<img" /local/templates/index_2026/components/ | grep -v ".bak"
+```
+
+И добавьте атрибуты:
 
 ```php
-// В init.php или в result_modifier.php компонента
-// Добавляет loading="lazy" для всех изображений, кроме первого
-AddEventHandler("main", "OnEndBufferContent", function(&$content) {
-    // Не трогаем админку и ajax
-    if (defined("ADMIN_SECTION") || defined("BX_AJAX")) return;
+<img src="<?= $arItem["PREVIEW_PICTURE"]["SRC"] ?>"
+     alt="<?= htmlspecialchars($arItem["NAME"]) ?>"
+     width="<?= $arItem["PREVIEW_PICTURE"]["WIDTH"] ?>"
+     height="<?= $arItem["PREVIEW_PICTURE"]["HEIGHT"] ?>"
+     loading="lazy"
+     decoding="async">
+```
 
-    // Заменяем все <img> без loading на loading="lazy", 
-    // но пропускаем первые 3 изображения (они выше сгиба)
+Для карточки, которая может оказаться на первом экране (первая в списке), `lazy` не ставить:
+
+```php
+<? $isFirst = ($arResult["NAV_RESULT"]->NavNum && $arItem["__FIRST"]); ?>
+<img ... <?= $isFirst ? 'fetchpriority="high"' : 'loading="lazy" decoding="async"' ?>>
+```
+
+## Вариант B: хук `OnEndBufferContent` (быстро, без правки компонентов)
+
+Работает для всего сайта сразу. Пропускает первые 2 картинки (герб/флаг), не трогает уже размеченные и админку.
+
+```php
+// /local/php_interface/init.php
+AddEventHandler("main", "OnEndBufferContent", function (&$content) {
+    if (defined("ADMIN_SECTION") || defined("BX_AJAX")) {
+        return;
+    }
+    if (stripos($content, "</body>") === false) {
+        return;
+    }
+
     $count = 0;
     $content = preg_replace_callback(
-        '/<img\s[^>]*?(?<!"loading")[^>]*>/i',
-        function($match) use (&$count) {
+        '/<img\b[^>]*>/i',
+        function ($m) use (&$count) {
             $count++;
-            // Первые 3 изображения не трогаем (выше сгиба)
-            if ($count <= 3) return $match[0];
-            // Если уже есть loading — пропускаем
-            if (stripos($match[0], 'loading=') !== false) return $match[0];
-            // Вставляем loading="lazy" после тега <img
-            return str_replace('<img', '<img loading="lazy"', $match[0]);
+            $tag = $m[0];
+
+            // Первые 2 изображения — шапка (герб, флаг), они выше сгиба
+            if ($count <= 2) {
+                return $tag;
+            }
+            // Уже размечено — не дублируем
+            if (stripos($tag, 'loading=') !== false) {
+                return $tag;
+            }
+
+            $tag = preg_replace('/\s*\/?>$/', '', $tag);
+            return $tag . ' loading="lazy" decoding="async">';
         },
         $content
     );
 });
 ```
 
-## Добавление в конкретные шаблоны компонентов
+Проверка после применения:
 
-Если хотите точечно — добавьте `loading="lazy"` прямо в `.php` шаблонах:
-
-```php
-// В шаблоне news.list, slider и т.д.
-<img loading="lazy" src="<?= $arItem["PREVIEW_PICTURE"]["SRC"] ?>" 
-     alt="<?= $arItem["NAME"] ?>" width="<?= $arItem["PREVIEW_PICTURE"]["WIDTH"] ?>" height="<?= $arItem["PREVIEW_PICTURE"]["HEIGHT"] ?>">
+```bash
+curl -s https://nlb.by/ | grep -c 'loading="lazy"'   # ожидаем ~35
 ```
 
-**Важно:** Всегда указывайте `width` и `height` для изображений — это устраняет CLS (Layout Shift).
+## Чего не делать
 
-## Для фоновых изображений в CSS
+- **Не ставить `lazy` на LCP-картинку.** На главной LCP — hero-блок (фон `hero-bg-side-2.jpg` + заголовок). Если сделать фон ленивым, LCP ухудшится.
+- **Не ставить `lazy` на логотип в шапке.**
+- **Не заменять `width`/`height` на `lazy`.** Это разные задачи: lazy экономит трафик, размеры — CLS.
 
-Если изображения заданы через CSS background — замените на `<img loading="lazy">` или используйте `<link rel="preload" as="image">` для первого экрана.
+## Фоновые изображения
+
+`hero-bg-side-2.jpg` (194 КБ) задан через CSS `background-image`. Лениво такие не грузятся, но их нужно:
+
+1. сжать и перевести в WebP/AVIF (~40–60 КБ);
+2. добавить `<link rel="preload" as="image" href="...webp" type="image/webp">` в `<head>` — см. `19_preload_and_iframe.md`.
 
 ## Проверка
 
 ```bash
-grep -r "loading=" /path/to/site/bitrix/templates/ | grep -v ".bak"
+# сколько картинок и сколько ленивых
+curl -s https://nlb.by/ | grep -o '<img' | wc -l
+curl -s https://nlb.by/ | grep -c 'loading="lazy"'
+
+# размеры
+curl -s https://nlb.by/ | grep -c 'width=' 
 ```
+
+DevTools → Network: при первой загрузке картинки ниже сгиба не должны появляться, пока не проскроллите.

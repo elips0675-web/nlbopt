@@ -1,64 +1,75 @@
 # 4. Отключить лишние модули (pull, protobuf, dexie, rest.client)
 
-## Проблема
+**Актуально на 26.10.2026.** В новом шаблоне эти скрипты остались и по-прежнему грузятся на каждой публичной странице.
 
-На публичных страницах грузятся:
-- `pull.client` и `pull.js` — для Push & Pull (чат, уведомления)
-- `protobuf.js` (71 КБ) — зависимость pull
-- `dexie.js` — IndexedDB для pull
-- `rest.client` — для REST API
+## Что грузится
 
-Если на сайте нет онлайн-чата/уведомлений — это лишний ~400 КБ JS.
+| Файл | Вес (decoded) | Зачем |
+|---|---|---|
+| `/bitrix/js/pull/protobuf/protobuf.js` | **268 КБ** (8 712 строк, не минифицирован) | сериализация для Push & Pull |
+| `/bitrix/js/ui/dexie/dist/dexie.bundle.min.js` | 100 КБ | IndexedDB для Pull |
+| `/bitrix/js/pull/client/pull.client.min.js` | 49 КБ | чат/уведомления в реальном времени |
+| `/bitrix/js/rest/client/rest.client.min.js` | 9 КБ | REST-клиент |
+| **Итого** | **426 КБ decoded / ~100 КБ gzip** | на публичке не нужны |
 
-## Способ 1: Через шаблон сайта (рекомендуется)
+Важно: `core.min.js` (177 КБ) и `baseline.bundle.min.js` (4 КБ) — **не трогать**, это ядро.
 
-В файле `bitrix/templates/ваш_шаблон/header.php` или лучше в `result_modifier.php`:
+Проверка, что они всё ещё подключены:
+
+```bash
+curl -s https://nlb.by/ | grep -o 'src="[^"]*\(pull\|protobuf\|dexie\|rest\.client\)[^"]*"'
+```
+
+## Способ 1: убрать из HTML (быстро, обратимо)
+
+Скрипты подключены в `<head>` шаблона `index_2026` с параметрами версии (`?17865184254439`), поэтому старую регулярку из первой версии инструкции использовать нельзя — она не учитывает query-строку и атрибуты после `src`.
 
 ```php
-// В init.php
-AddEventHandler("main", "OnEndBufferContent", function(&$content) {
-    if (defined("ADMIN_SECTION") || defined("BX_AJAX")) return;
-    
-    // Удаляем ненужные скрипты по URL
-    $removePatterns = [
-        '/pull\.client\.js/i',
-        '/protobuf\.js/i',
-        '/dexie\.js/i',
-        '/rest\.client\.js/i',
-        '/pull\.js/i',
-    ];
-    
-    foreach ($removePatterns as $pattern) {
-        // Удаляем <script src="..."></script>
-        $content = preg_replace(
-            '/<script[^>]*src="[^"]*(' . str_replace('/', '\/', $pattern) . ')[^"]*"[^>]*><\/script>\s*\n?/i',
-            '',
-            $content
-        );
+// /local/php_interface/init.php
+AddEventHandler("main", "OnEndBufferContent", function (&$content) {
+    if (defined("ADMIN_SECTION") || defined("BX_AJAX")) {
+        return;
     }
+
+    $patterns = [
+        '#<script[^>]*\bsrc="[^"]*/pull/protobuf/(protobuf|model)[^"]*"[^>]*>\s*</script>#i',
+        '#<script[^>]*\bsrc="[^"]*/pull/client/pull\.client[^"]*"[^>]*>\s*</script>#i',
+        '#<script[^>]*\bsrc="[^"]*/ui/dexie/dist/dexie\.bundle[^"]*"[^>]*>\s*</script>#i',
+        '#<script[^>]*\bsrc="[^"]*/rest/client/rest\.client[^"]*"[^>]*>\s*</script>#i',
+    ];
+
+    $content = preg_replace($patterns, '', $content);
 });
 ```
 
-## Способ 2: Отключить модуль Pull в админке
+Это убирает теги из выдачи, но модуль Pull продолжает инициализироваться на сервере и может добавлять inline-код. Если после этого в консоли появляются ошибки `BX.PULL is not defined` — переходите к способу 2.
 
-**Настройки → Настройки продукта → Модули → Push & Pull** → нажать «Удалить» (деактивация).
+## Способ 2: отключить модуль Pull (надёжно)
 
-Если модуль используется — оставьте, отключите только подключение на публичных страницах.
+**Настройки → Настройки продукта → Модули → Push & Pull** → деактивировать, если на сайте нет:
 
-## Способ 3: Через result_modifier компонента
+- онлайн-чата на базе Битрикса (Jivo — это отдельный виджет, от Pull не зависит);
+- живых уведомлений;
+- «живого» поиска/комментариев, завязанных на Pull.
 
-Если скрипты тянутся через `epilog.php` — создайте `/bitrix/templates/ваш_шаблон/epilog.php`:
+Затем очистить кэш. После деактивации `protobuf`, `dexie` и `pull.client` исчезают из выдачи сами.
 
-```php
-<?php
-// Отключаем pull на публичных страницах
-if (CModule::IncludeModule('pull')) {
-    $GLOBALS['APPLICATION']->SetAdditionalCSS('/bitrix/js/pull/pull.css', true, true); // оставляем CSS
-    // JS отключаем — не добавляем pull скрипты
-}
-?>
-```
+## Способ 3: точечно в шаблоне
 
-## Проверка
+В `/local/templates/index_2026/header.php` найдите `\Bitrix\Main\Page\Asset::getInstance()` / `SetAdditionalJS` и не подключайте эти файлы на публичных страницах. Минус: при обновлении шаблона правку легко потерять.
 
-Откройте вкладку Network в DevTools и убедитесь, что файлы `pull.*`, `protobuf*`, `dexie*`, `rest.client*` больше не загружаются.
+## Проверка после удаления
+
+1. `curl -s https://nlb.by/ | grep -c protobuf` → `0`.
+2. Открыть сайт, DevTools → Console: не должно быть ошибок `BX.PULL`, `Dexie`, `protobuf`.
+3. Проверить: форма входа, поиск, cookie-баннер, меню, слайдер, переключатель «Слабовидящим».
+4. `/bitrix/admin/` — должен открываться (403/логин), админка не должна зависеть от публичного Pull.
+5. Замерить: JS было 683 КБ decoded → должно стать ~256 КБ.
+
+## Ожидаемый эффект
+
+- −426 КБ decoded, −100 КБ transfer;
+- меньше работы main thread на старте (TBT), особенно на мобиле;
+- минус 4 запроса.
+
+Если Pull нужен для чата — оставляйте, но тогда хотя бы минифицируйте `protobuf.js` и грузите его лениво после взаимодействия.
