@@ -1,6 +1,6 @@
 # Performance Audit Checklist for 1C-Bitrix
 
-> **Актуальные замеры nlb.by (26.10.2026):** 8 364 КБ transfer, из них 7 972 КБ — изображения; 0 `loading="lazy"`, 0 WebP, 60 запросов, TTFB 471 мс, FCP 1 056 мс. Подробности — в [`29_audit_2026_10_26.md`](29_audit_2026_10_26.md).
+> **Актуальные замеры nlb.by (26.10.2026):** 8 364 КБ transfer, из них 7 972 КБ — изображения; 0 `loading="lazy"`, 0 WebP, 60 запросов, TTFB 471 мс, FCP 1 056 мс. Lighthouse 13.3 (мобильный): **Performance 89, TBT 390 мс, CLS 0**, unused JS 190 КиБ, bfcache — 2 причины. Подробности — в [`29_audit_2026_10_26.md`](29_audit_2026_10_26.md).
 
 ## 1. Изображения (~8 МБ — главная проблема!)
 

@@ -177,7 +177,7 @@
 12_full_audit_checklist.md      — Сводный чеклист
 13_hide_files_from_public.md    — Закрытие файлов от публичного доступа
 14_audit_checklist_with_references.md — Этот файл
-15_whats_not_covered.md         — Что ещё не покрыто (анализ)
+15_whats_not_covered.md         — Исторический список идей (что уже покрыто)
 16_critical_css.md              — Critical CSS
 17_opcache_phpfpm.md           — PHP OPcache + PHP-FPM tuning
 18_mysql_tuning.md             — MySQL tuning + медленные запросы

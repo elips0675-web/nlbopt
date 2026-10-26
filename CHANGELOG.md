@@ -16,6 +16,8 @@
 - `19_preload_and_iframe.md` — LCP request discovery и network dependency tree.
 - `22_containment_server_timing.md` — non-composited animations: только `transform`/`opacity`.
 - `12_full_audit_checklist.md`, `14_audit_checklist_with_references.md` — чекбоксы bfcache, анимаций, `width`/`height`; итого 90 пунктов.
+- `02_webp_and_compress.md`, `11_performance_audit_checklist.md` — добавлена оценка Lighthouse 5,1 МБ и метрики 13.3.
+- `15_whats_not_covered.md` — помечен как исторический список: темы 15–28 уже реализованы, актуальные ссылки в таблице.
 - `CHANGELOG.md` — эта запись.
 
 ---

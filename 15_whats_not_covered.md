@@ -1,10 +1,30 @@
-# Что ещё не покрыто — производительность и безопасность
+# Что ещё не покрыто — исторический список идей
 
-В репозитории 14 файлов (01–14), но следующие темы остались за бортом. Ниже — список того, что можно добавить.
+> **Актуально на 26.10.2026.** Этот файл писался, когда в репозитории было 14 инструкций. Сейчас их 31, и почти всё из списка ниже уже разобрано в отдельных файлах. Оставлен как оглавление идей и задел на будущее; актуальный статус — в `README.md`.
+
+Что из этого уже покрыто:
+
+| Тема | Файл |
+|---|---|
+| Critical CSS | `16_critical_css.md` |
+| OPcache / PHP-FPM | `17_opcache_phpfpm.md` |
+| MySQL / slow query log | `18_mysql_tuning.md` |
+| Preload / Resource Hints / lazy iframe | `19_preload_and_iframe.md` |
+| Brotli / HTTP/3 | `20_brotli_http3.md` |
+| CDN / AVIF | `21_cdn_avif.md` |
+| CSS containment / Server-Timing / анимации | `22_containment_server_timing.md` |
+| 2FA / Fail2ban / WAF | `23_2fa_fail2ban_waf.md` |
+| AIDE / SELinux / SSH | `24_aide_selinux_ssh.md` |
+| Session security / SRI / CSP | `25_session_sri_csp.md` |
+| SPF / DKIM / DMARC / DNSSEC / CAA | `26_email_dns_security.md` |
+| Сканирование / CVE | `27_vulnerability_scanning.md` |
+| Nmap / порты / NSE | `28_nmap_scanning.md` |
+
+Действительно не покрыто: font subsetting (частично в `06_fonts_display_swap.md`), уменьшение числа запросов через SVG-спрайты, отдельные детали CSP/Trusted Types.
 
 ---
 
-## Производительность — не покрыто
+## Производительность — исходный список
 
 ### 1. Critical CSS (критические стили «над сгибом»)
 
@@ -141,7 +161,7 @@ header("Server-Timing: db={$dbTime};php={$phpTime};composite={$cacheHit}");
 
 ---
 
-## Безопасность — не покрыто
+## Безопасность — исходный список
 
 ### 1. Двухфакторная аутентификация (2FA)
 
@@ -344,21 +364,6 @@ header("Content-Security-Policy: require-trusted-types-for 'script'; trusted-typ
 
 ---
 
-## Итог: что можно добавить в репозиторий
+## Итог
 
-| № | Тема | Тип |
-|---|------|-----|
-| 15 | Critical CSS | Производительность |
-| 16 | PHP OPcache + PHP-FPM | Производительность |
-| 17 | MySQL tuning + slow query log | Производительность |
-| 18 | Preload / Resource Hints | Производительность |
-| 19 | Lazy load iframe (YouTube, карты) | Производительность |
-| 20 | Brotli статика + HTTP/3 | Производительность |
-| 21 | CDN для статики | Производительность |
-| 22 | AVIF изображения | Производительность |
-| 23 | CSS containment + Server-Timing | Производительность |
-| 24 | 2FA / Fail2ban / ModSecurity | Безопасность |
-| 25 | AIDE / SELinux / SSH hardening | Безопасность |
-| 26 | Session security / SRI / CSP strict-dynamic | Безопасность |
-| 27 | SPF/DKIM/DMARC / DNSSEC / CAA | Безопасность |
-| 28 | Vulnerability scanning / CVE monitoring | Безопасность |
+Список 15–28 реализован — это файлы `16_critical_css.md` … `28_nmap_scanning.md`. Открытые темы на будущее: font subsetting, SVG-спрайты, детальный CSP/Trusted Types. Актуальный статус и приоритеты — в `README.md`.
